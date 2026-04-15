@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Day Spa | Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #F7F8FA;
+            --white: #FFFFFF;
+            --forest: #1A3A28;
+            --forest-light: #2D5A3D;
+            --gold: #C9A96E;
+            --text: #1A1A1A;
+            --text-sec: #6B7280;
+            --border: #E5E7EB;
+            --blue: #3B82F6;
+            --red: #EF4444;
+            --green: #10B981;
+            --radius: 12px;
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg); color: var(--text);
+            line-height: 1.6; -webkit-font-smoothing: antialiased;
+        }
+
+        /* Layout */
+        .layout { display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px; background: var(--forest);
+            color: white; padding: 24px 0;
+            position: fixed; top: 0; left: 0; bottom: 0;
+            overflow-y: auto; z-index: 50;
+            transition: transform 0.3s;
+        }
+        .sidebar-logo {
+            font-size: 1.1rem; font-weight: 700;
+            padding: 0 24px; margin-bottom: 8px;
+        }
+        .sidebar-sub {
+            font-size: 0.72rem; color: rgba(255,255,255,0.4);
+            padding: 0 24px; margin-bottom: 32px;
+            letter-spacing: 0.05em;
+        }
+        .sidebar-nav a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 24px; text-decoration: none;
+            color: rgba(255,255,255,0.6); font-size: 0.88rem;
+            font-weight: 500; transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-nav a:hover { color: white; background: rgba(255,255,255,0.05); }
+        .sidebar-nav a.active {
+            color: white; background: rgba(255,255,255,0.08);
+            border-left-color: var(--gold);
+        }
+        .sidebar-nav a .icon { font-size: 1.1rem; width: 24px; text-align: center; }
+
+        /* Main */
+        .main { flex: 1; margin-left: 260px; padding: 32px; }
+
+        /* Top bar */
+        .topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 32px;
+        }
+        .topbar h1 { font-size: 1.5rem; font-weight: 700; }
+        .topbar-actions { display: flex; gap: 12px; }
+
+        /* Cards */
+        .card {
+            background: var(--white); border-radius: var(--radius);
+            border: 1px solid var(--border); padding: 28px;
+            margin-bottom: 24px;
+        }
+        .card-title {
+            font-size: 0.92rem; font-weight: 700;
+            margin-bottom: 20px; display: flex;
+            align-items: center; gap: 8px;
+        }
+        .card-title .badge {
+            font-size: 0.65rem; font-weight: 600;
+            background: var(--forest); color: white;
+            padding: 2px 8px; border-radius: 4px;
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+
+        /* Form */
+        .field { margin-bottom: 20px; }
+        .field:last-child { margin-bottom: 0; }
+        .field label {
+            display: block; font-size: 0.78rem; font-weight: 600;
+            color: var(--text-sec); margin-bottom: 6px;
+            text-transform: uppercase; letter-spacing: 0.05em;
+        }
+        .field input, .field textarea, .field select {
+            width: 100%; padding: 10px 14px;
+            border: 1px solid var(--border); border-radius: 8px;
+            font-family: inherit; font-size: 0.92rem;
+            transition: border-color 0.2s;
+            background: white;
+        }
+        .field input:focus, .field textarea:focus, .field select:focus {
+            outline: none; border-color: var(--forest);
+        }
+        .field textarea { resize: vertical; min-height: 80px; }
+        .field .hint {
+            font-size: 0.75rem; color: var(--text-sec);
+            margin-top: 4px;
+        }
+        .field-row {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 24px; border-radius: 8px;
+            font-size: 0.85rem; font-weight: 600;
+            border: none; cursor: pointer;
+            font-family: inherit; transition: all 0.2s;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-primary { background: var(--forest); color: white; }
+        .btn-primary:hover { background: var(--forest-light); }
+        .btn-gold { background: var(--gold); color: var(--forest); }
+        .btn-gold:hover { opacity: 0.9; }
+        .btn-outline { background: white; color: var(--text); border: 1px solid var(--border); }
+        .btn-outline:hover { border-color: var(--text-sec); }
+        .btn-danger { background: white; color: var(--red); border: 1px solid var(--red); }
+        .btn-danger:hover { background: #FEF2F2; }
+        .btn-sm { padding: 6px 14px; font-size: 0.78rem; }
+
+        /* Service item in admin */
+        .svc-admin-item {
+            border: 1px solid var(--border); border-radius: 8px;
+            padding: 16px; margin-bottom: 12px;
+            background: var(--bg);
+        }
+        .svc-admin-header {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 12px;
+        }
+        .svc-admin-header h4 { font-size: 0.92rem; font-weight: 600; }
+        .svc-admin-actions { display: flex; gap: 8px; }
+
+        /* Panel switching */
+        .admin-panel { display: none; }
+        .admin-panel.active { display: block; }
+
+        /* Preview */
+        .preview-frame {
+            width: 100%; height: 600px; border: none;
+            border-radius: var(--radius);
+            background: white;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: var(--forest); color: white;
+            padding: 14px 24px; border-radius: 8px;
+            font-size: 0.88rem; font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            transform: translateY(100px); opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* Mobile sidebar toggle */
+        .mobile-toggle {
+            display: none; position: fixed; top: 16px; left: 16px;
+            z-index: 60; background: var(--forest); color: white;
+            border: none; width: 40px; height: 40px; border-radius: 8px;
+            font-size: 1.2rem; cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; }
+            .mobile-toggle { display: flex; align-items: center; justify-content: center; }
+            .field-row { grid-template-columns: 1fr; }
+        }
+
+        /* Export modal */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            z-index: 100; display: none;
+            align-items: center; justify-content: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: white; border-radius: var(--radius);
+            padding: 32px; max-width: 600px; width: 90%;
+            max-height: 80vh; overflow-y: auto;
+        }
+        .modal h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+        .modal textarea {
+            width: 100%; height: 200px; font-family: 'Courier New', monospace;
+            font-size: 0.78rem; padding: 12px; border: 1px solid var(--border);
+            border-radius: 8px; resize: vertical;
+        }
+    </style>
+</head>
+<body>
+
+<button class="mobile-toggle" id="mobToggle">&#9776;</button>
+
+<div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">Forest Day Spa</div>
+        <div class="sidebar-sub">Admin Panel</div>
+        <nav class="sidebar-nav">
+            <a href="#" class="active" data-panel="dashboard">
+                <span class="icon">&#9635;</span> Dashboard
+            </a>
+            <a href="#" data-panel="hero">
+                <span class="icon">&#9654;</span> Hero (Video)
+            </a>
+            <a href="#" data-panel="about">
+                <span class="icon">&#9998;</span> About
+            </a>
+            <a href="#" data-panel="services">
+                <span class="icon">&#10024;</span> Services
+            </a>
+            <a href="#" data-panel="membership">
+                <span class="icon">&#9733;</span> Membership
+            </a>
+            <a href="#" data-panel="beforeafter">
+                <span class="icon">&#9874;</span> Before & After
+            </a>
+            <a href="#" data-panel="contact">
+                <span class="icon">&#128205;</span> Contact
+            </a>
+            <a href="#" data-panel="preview">
+                <span class="icon">&#128065;</span> Preview
+            </a>
+        </nav>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- ═══ DASHBOARD ═══ -->
+        <div class="admin-panel active" id="p-dashboard">
+            <div class="topbar">
+                <h1>Dashboard</h1>
+                <div class="topbar-actions">
+                    <button class="btn btn-primary" onclick="saveAll()">&#128190; Save All</button>
+                    <button class="btn btn-gold" onclick="exportHTML()">&#128228; Export HTML</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Welcome to the Admin Panel</div>
+                <p style="color:var(--text-sec);font-size:0.92rem;line-height:1.8;">
+                    Here you can edit all sections of the Forest Day Spa website without touching any code.
+                    Use the sidebar to navigate to each section, make your changes, and click <strong>Save All</strong>.
+                    When you're ready to publish, click <strong>Export HTML</strong> to get the code for Wix.
+                </p>
+                <div style="margin-top:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+                    <div style="padding:20px;background:var(--bg);border-radius:8px;text-align:center;">
+                        <div style="font-size:2rem;font-weight:700;color:var(--forest);">6</div>
+                        <div style="font-size:0.78rem;color:var(--text-sec);">Sections</div>
+                    </div>
+                    <div style="padding:20px;background:var(--bg);border-radius:8px;text-align:center;">
+                        <div style="font-size:2rem;font-weight:700;color:var(--forest);">15</div>
+                        <div style="font-size:0.78rem;color:var(--text-sec);">Services</div>
+                    </div>
+                    <div style="padding:20px;background:var(--bg);border-radius:8px;text-align:center;">
+                        <div style="font-size:2rem;font-weight:700;color:var(--forest);">1</div>
+                        <div style="font-size:0.78rem;color:var(--text-sec);">Membership Plan</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Quick Guide</div>
+                <ol style="color:var(--text-sec);font-size:0.88rem;line-height:2;padding-left:20px;">
+                    <li>Click on a section in the sidebar to edit its content</li>
+                    <li>Fill in or change the text fields, image URLs, etc.</li>
+                    <li>Click <strong>Save All</strong> to save changes (stored in your browser)</li>
+                    <li>Click <strong>Preview</strong> in the sidebar to see a live preview</li>
+                    <li>When done, click <strong>Export HTML</strong> to download the final website code</li>
+                    <li>Upload the exported HTML to Wix (see Wix Guide below)</li>
+                </ol>
+            </div>
+            <div class="card">
+                <div class="card-title">Wix Deployment Guide <span class="badge">Important</span></div>
+                <div style="color:var(--text-sec);font-size:0.88rem;line-height:2;">
+                    <p><strong>Option A: Wix HTML Embed (Recommended for custom code)</strong></p>
+                    <ol style="padding-left:20px;margin-bottom:16px;">
+                        <li>Export HTML from this admin panel</li>
+                        <li>Log in to your Wix editor</li>
+                        <li>Add an "Embed HTML" element (Add &rarr; Embed &rarr; Custom Embeds &rarr; Embed a Widget)</li>
+                        <li>Paste the exported HTML code</li>
+                        <li>Resize the widget to fill the full page width</li>
+                        <li>Publish your Wix site</li>
+                    </ol>
+                    <p><strong>Option B: Wix Velo (For full custom site)</strong></p>
+                    <ol style="padding-left:20px;margin-bottom:16px;">
+                        <li>Enable Velo by Wix in your editor (Dev Mode)</li>
+                        <li>Use the exported HTML structure as a reference</li>
+                        <li>Recreate sections using Wix elements + custom CSS/JS in Velo</li>
+                    </ol>
+                    <p><strong>Option C: External Hosting + Wix Domain</strong></p>
+                    <ol style="padding-left:20px;">
+                        <li>Upload the HTML file to Netlify, Vercel, or GitHub Pages (free)</li>
+                        <li>Connect your forestdayspa.com domain to the hosting provider</li>
+                        <li>This gives full control and the best performance</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ HERO ═══ -->
+        <div class="admin-panel" id="p-hero">
+            <div class="topbar">
+                <h1>Hero Section</h1>
+                <button class="btn btn-primary" onclick="saveAll()">&#128190; Save</button>
+            </div>
+            <div class="card">
+                <div class="card-title">Video / Background</div>
+                <div class="field">
+                    <label>Video URL (MP4)</label>
+                    <input type="text" id="hero-video" placeholder="https://your-video-url.mp4">
+                    <p class="hint">Leave empty to use the poster image instead. You can upload a video to YouTube and use a direct link, or use a stock video service.</p>
+                </div>
+                <div class="field">
+                    <label>Fallback Image URL</label>
+                    <input type="text" id="hero-poster" value="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80">
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Text Content</div>
+                <div class="field">
+                    <label>Eyebrow Text</label>
+                    <input type="text" id="hero-eyebrow" value="Korean-Inspired Wellness · Carrollton, TX">
+                </div>
+                <div class="field">
+                    <label>Headline</label>
+                    <input type="text" id="hero-headline" value="Where K-Beauty Meets Forest Tranquility">
+                </div>
+                <div class="field">
+                    <label>Description</label>
+                    <textarea id="hero-desc">Advanced Korean skincare techniques in a soothing, nature-inspired space. Rediscover your calm, restore your glow.</textarea>
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label>Primary Button Text</label>
+                        <input type="text" id="hero-btn1" value="Book Appointment">
+                    </div>
+                    <div class="field">
+                        <label>Secondary Button Text</label>
+                        <input type="text" id="hero-btn2" value="Explore Services">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ ABOUT ═══ -->
+        <div class="admin-panel" id="p-about">
+            <div class="topbar">
+                <h1>About Section</h1>
+                <button class="btn btn-primary" onclick="saveAll()">&#128190; Save</button>
+            </div>
+            <div class="card">
+                <div class="card-title">About Content</div>
+                <div class="field">
+                    <label>Section Label</label>
+                    <input type="text" id="about-label" value="About Us">
+                </div>
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" id="about-title" value="Precision Care, Rooted in Nature">
+                </div>
+                <div class="field">
+                    <label>Description (Paragraph 1)</label>
+                    <textarea id="about-desc1">Forest Day Spa is a premium Korean-inspired wellness spa dedicated to skin health, scalp restoration, and total relaxation. We blend traditional Korean beauty philosophy with modern skin technology to offer not just treatments — but true transformation.</textarea>
+                </div>
+                <div class="field">
+                    <label>Description (Paragraph 2)</label>
+                    <textarea id="about-desc2">Our lead esthetician trained in Korea and brings years of hands-on experience in advanced facials, devices, and scalp care. Here, you're not just another appointment — you're a guest we genuinely care for.</textarea>
+                </div>
+                <div class="field">
+                    <label>Image URL</label>
+                    <input type="text" id="about-img" value="https://images.unsplash.com/photo-1600334129128-685054110230?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80">
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SERVICES ═══ -->
+        <div class="admin-panel" id="p-services">
+            <div class="topbar">
+                <h1>Services</h1>
+                <div class="topbar-actions">
+                    <button class="btn btn-primary" onclick="saveAll()">&#128190; Save</button>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Manage Services <span class="badge">Facial / Body / Scalp</span></div>
+                <p style="color:var(--text-sec);font-size:0.85rem;margin-bottom:20px;">
+                    Edit service details below. Changes will be reflected in the website when you save and export.
+                </p>
+                <div style="margin-bottom:16px;">
+                    <label style="font-size:0.78rem;font-weight:600;color:var(--text-sec);text-transform:uppercase;letter-spacing:0.05em;">Category Filter</label>
+                    <select id="svc-filter" style="margin-top:4px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.88rem;">
+                        <option value="all">All Services</option>
+                        <option value="facial">Facial</option>
+                        <option value="body">Body</option>
+                        <option value="scalp">Scalp</option>
+                    </select>
+                </div>
+                <div id="svc-list"></div>
+                <button class="btn btn-outline" style="margin-top:16px;" onclick="addService()">+ Add New Service</button>
+            </div>
+        </div>
+
+        <!-- ═══ MEMBERSHIP ═══ -->
+        <div class="admin-panel" id="p-membership">
+            <div class="topbar">
+                <h1>Membership</h1>
+                <button class="btn btn-primary" onclick="saveAll()">&#128190; Save</button>
+            </div>
+            <div class="card">
+                <div class="card-title">SOOP Membership Details</div>
+                <div class="field-row">
+                    <div class="field">
+                        <label>Membership Name</label>
+                        <input type="text" id="mem-name" value="SOOP Membership">
+                    </div>
+                    <div class="field">
+                        <label>Monthly Price</label>
+                        <input type="text" id="mem-price" value="$89">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Subtitle</label>
+                    <input type="text" id="mem-subtitle" value="One included service credit per month">
+                </div>
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" id="mem-title" value="Invest in Your Ongoing Wellness">
+                </div>
+                <div class="field">
+                    <label>Description</label>
+                    <textarea id="mem-desc">Designed for consistent, intentional care. Enjoy member-exclusive pricing and flexible benefits with no long-term commitment.</textarea>
+                </div>
+                <div class="field">
+                    <label>Perks (one per line)</label>
+                    <textarea id="mem-perks" style="min-height:160px;">Choose one service per month from Facial, Body, or Scalp Care menu
+Upgrade anytime — pay only the difference
+Member-exclusive service pricing on all treatments
+Birthday month: 5% off retail products (up to $300)
+No long-term commitment — flexible and easy to maintain</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ BEFORE & AFTER ═══ -->
+        <div class="admin-panel" id="p-beforeafter">
+            <div class="topbar">
+                <h1>Before & After</h1>
+                <button class="btn btn-primary" onclick="saveAll()">&#128190; Save</button>
+            </div>
+            <div class="card">
+                <div class="card-title">Treatment Results</div>
+                <p style="color:var(--text-sec);font-size:0.85rem;margin-bottom:20px;">
+                    Add before/after comparison photos to showcase your treatment results.
+                </p>
+                <div id="ba-list"></div>
+                <button class="btn btn-outline" style="margin-top:16px;" onclick="addBA()">+ Add Comparison</button>
+            </div>
+        </div>
+
+        <!-- ═══ CONTACT ═══ -->
+        <div class="admin-panel" id="p-contact">
+            <div class="topbar">
+                <h1>Contact Info</h1>
+                <button class="btn btn-primary" onclick="saveAll()">&#128190; Save</button>
+            </div>
+            <div class="card">
+                <div class="card-title">Business Details</div>
+                <div class="field">
+                    <label>Address</label>
+                    <input type="text" id="ct-address" value="2625 Old Denton Rd, Ste 450, Carrollton, TX 75007">
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label>Phone</label>
+                        <input type="text" id="ct-phone" value="(972) 800-9730">
+                    </div>
+                    <div class="field">
+                        <label>Email</label>
+                        <input type="text" id="ct-email" value="hello@forestdayspa.com">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Business Hours</label>
+                    <input type="text" id="ct-hours" value="Mon – Sat: 10:00 AM – 7:00 PM | Sun: By Appointment Only">
+                </div>
+                <div class="field">
+                    <label>Google Maps Embed URL</label>
+                    <input type="text" id="ct-map" value="">
+                    <p class="hint">Go to Google Maps → Share → Embed → Copy the src URL from the iframe code</p>
+                </div>
+                <div class="field">
+                    <label>Instagram URL</label>
+                    <input type="text" id="ct-ig" value="">
+                </div>
+                <div class="field">
+                    <label>Facebook URL</label>
+                    <input type="text" id="ct-fb" value="">
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ PREVIEW ═══ -->
+        <div class="admin-panel" id="p-preview">
+            <div class="topbar">
+                <h1>Live Preview</h1>
+                <div class="topbar-actions">
+                    <button class="btn btn-outline" onclick="refreshPreview()">&#128260; Refresh</button>
+                    <button class="btn btn-gold" onclick="exportHTML()">&#128228; Export HTML</button>
+                </div>
+            </div>
+            <div class="card" style="padding:0;overflow:hidden;">
+                <iframe id="previewFrame" class="preview-frame"></iframe>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Export Modal -->
+<div class="modal-overlay" id="exportModal">
+    <div class="modal">
+        <h3>Export HTML</h3>
+        <p style="color:var(--text-sec);font-size:0.85rem;margin-bottom:16px;">
+            Copy the code below and paste it into Wix's "Embed HTML" widget, or save it as an .html file.
+        </p>
+        <textarea id="exportCode" readonly></textarea>
+        <div style="display:flex;gap:12px;margin-top:16px;">
+            <button class="btn btn-primary" onclick="copyExport()">&#128203; Copy to Clipboard</button>
+            <button class="btn btn-gold" onclick="downloadExport()">&#128229; Download .html</button>
+            <button class="btn btn-outline" onclick="closeExportModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══ DATA ═══
+const DEFAULT_SERVICES = [
+    { id: 1, cat: 'facial', name: 'Stay Beauty', korean: '베이직 관리', dur: '60 min', desc: 'Deep cleansing, facial massage with décolleté massage, premium ampoules, and a modeling mask for radiant skin.', price: '$119', memberPrice: '$89' },
+    { id: 2, cat: 'facial', name: 'Snow Beauty', korean: '미백관리', dur: '80 min', desc: 'Brightening facial with 4 premium vitamin ampoules, deep exfoliation, LED therapy, and a premium vitamin mask sheet.', price: '$179', memberPrice: '$149' },
+    { id: 3, cat: 'facial', name: 'Facial Contouring', korean: '얼굴 윤곽 경락', dur: '90 min', desc: 'Korean Gyeongrak lifting care with advanced devices to firm, contour, and naturally lift the skin.', price: '$199', memberPrice: '$179' },
+    { id: 4, cat: 'facial', name: 'Sono Beauty', korean: '물방울 초음파', dur: '70 min', desc: 'Low-irritation Sono ultrasound facial to calm, balance, and refine skin.', price: '$149', memberPrice: '$119' },
+    { id: 5, cat: 'facial', name: 'Reset Beauty', korean: '모공 관리', dur: '80 min', desc: 'Aqua-Peel deeply cleanses pores and infuses hydration for radiant skin.', price: '$179', memberPrice: '$149' },
+    { id: 6, cat: 'body', name: 'Gyeongrak Full Body', korean: '전신경락', dur: '55-85 min', desc: 'Korean-style full body massage with RF heat for total body relaxation.', price: 'From $135', memberPrice: 'From $105' },
+    { id: 7, cat: 'body', name: 'Partial Contouring', korean: '바디 부분 경락', dur: '50-65 min', desc: 'Choose upper or lower body for focused massage and circulation improvement.', price: 'From $119', memberPrice: 'From $89' },
+    { id: 8, cat: 'body', name: 'Cellulite Reduction', korean: '셀룰라이트 감소', dur: '55 min', desc: 'Ultrasonic Cavitation and RF to break down cellulite and improve firmness.', price: '$149', memberPrice: '$129' },
+    { id: 9, cat: 'body', name: 'Abdomen & Sides', korean: '복부 허리라인 슬리밍', dur: '70 min', desc: 'Cavitation on stomach and love handles with skin tightening.', price: '$179', memberPrice: '$159' },
+    { id: 10, cat: 'body', name: 'Back & Side Reduction', korean: '등 + 옆구리 슬리밍', dur: '55 min', desc: 'Ultrasonic Cavitation and RF suction for back area sculpting.', price: '$149', memberPrice: '$129' },
+    { id: 11, cat: 'body', name: 'Dress Care Sculpting', korean: '쇄골 어깨 라인 슬리밍', dur: '70 min', desc: 'Sculpting treatment for collarbone, upper chest, and shoulder definition.', price: '$179', memberPrice: '$159' },
+    { id: 12, cat: 'scalp', name: 'Relaxing Head Spa', korean: '릴렉싱 헤드스파', dur: '60 min', desc: 'Aromatherapy, Gua-Sha, and scalp massage for tension release.', price: '$119', memberPrice: '$89' },
+    { id: 13, cat: 'scalp', name: 'Scalp Detox', korean: '두피 디톡스 헤드스파', dur: '75 min', desc: 'Deep-cleansing detox for healthier hair growth foundation.', price: '$149', memberPrice: '$119' },
+    { id: 14, cat: 'scalp', name: 'Hair-Loss Restoration', korean: '탈모관리 헤드스파', dur: '90 min', desc: 'LED therapy and RF stimulation for scalp vitality and regrowth.', price: '$189', memberPrice: '$159' },
+    { id: 15, cat: 'scalp', name: 'Damaged Hair Restoration', korean: '손상모 복구관리 헤드스파', dur: '90 min', desc: 'Intensive repair treatment for chemically damaged hair.', price: '$189', memberPrice: '$159' },
+];
+
+const DEFAULT_BA = [
+    { id: 1, beforeImg: '', afterImg: '', title: 'Facial Contouring', desc: 'After 3 sessions · Gyeongrak lifting care' },
+    { id: 2, beforeImg: '', afterImg: '', title: 'Scalp Detox', desc: 'After 4 sessions · Deep-cleansing detox' },
+];
+
+let services = JSON.parse(localStorage.getItem('fds_services')) || [...DEFAULT_SERVICES];
+let baItems = JSON.parse(localStorage.getItem('fds_ba')) || [...DEFAULT_BA];
+
+// ═══ SIDEBAR NAV ═══
+document.querySelectorAll('.sidebar-nav a').forEach(link => {
+    link.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+        link.classList.add('active');
+        document.getElementById('p-' + link.dataset.panel).classList.add('active');
+        if (link.dataset.panel === 'preview') refreshPreview();
+        if (link.dataset.panel === 'services') renderServices();
+        if (link.dataset.panel === 'beforeafter') renderBA();
+        document.getElementById('sidebar').classList.remove('open');
+    });
+});
+
+// Mobile toggle
+document.getElementById('mobToggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+});
+
+// ═══ SERVICES RENDER ═══
+function renderServices() {
+    const filter = document.getElementById('svc-filter').value;
+    const list = document.getElementById('svc-list');
+    const filtered = filter === 'all' ? services : services.filter(s => s.cat === filter);
+
+    list.innerHTML = filtered.map(s => `
+        <div class="svc-admin-item" data-id="${s.id}">
+            <div class="svc-admin-header">
+                <h4>${s.name} <span style="font-size:0.75rem;color:var(--text-sec);font-weight:400;">(${s.cat})</span></h4>
+                <div class="svc-admin-actions">
+                    <button class="btn btn-sm btn-outline" onclick="editService(${s.id})">Edit</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteService(${s.id})">Delete</button>
+                </div>
+            </div>
+            <div id="svc-edit-${s.id}" style="display:none;">
+                <div class="field-row">
+                    <div class="field">
+                        <label>Service Name</label>
+                        <input type="text" value="${s.name}" onchange="updateSvc(${s.id},'name',this.value)">
+                    </div>
+                    <div class="field">
+                        <label>Category</label>
+                        <select onchange="updateSvc(${s.id},'cat',this.value)">
+                            <option value="facial" ${s.cat==='facial'?'selected':''}>Facial</option>
+                            <option value="body" ${s.cat==='body'?'selected':''}>Body</option>
+                            <option value="scalp" ${s.cat==='scalp'?'selected':''}>Scalp</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label>Korean Name</label>
+                        <input type="text" value="${s.korean}" onchange="updateSvc(${s.id},'korean',this.value)">
+                    </div>
+                    <div class="field">
+                        <label>Duration</label>
+                        <input type="text" value="${s.dur}" onchange="updateSvc(${s.id},'dur',this.value)">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Description</label>
+                    <textarea onchange="updateSvc(${s.id},'desc',this.value)">${s.desc}</textarea>
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label>Non-member Price</label>
+                        <input type="text" value="${s.price}" onchange="updateSvc(${s.id},'price',this.value)">
+                    </div>
+                    <div class="field">
+                        <label>Member Price</label>
+                        <input type="text" value="${s.memberPrice}" onchange="updateSvc(${s.id},'memberPrice',this.value)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+document.getElementById('svc-filter').addEventListener('change', renderServices);
+
+function editService(id) {
+    const el = document.getElementById('svc-edit-' + id);
+    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function updateSvc(id, key, val) {
+    const svc = services.find(s => s.id === id);
+    if (svc) svc[key] = val;
+}
+
+function deleteService(id) {
+    if (confirm('Delete this service?')) {
+        services = services.filter(s => s.id !== id);
+        renderServices();
+    }
+}
+
+function addService() {
+    const newId = Math.max(...services.map(s => s.id), 0) + 1;
+    services.push({
+        id: newId, cat: 'facial', name: 'New Service',
+        korean: '', dur: '60 min', desc: '', price: '$0', memberPrice: '$0'
+    });
+    renderServices();
+    editService(newId);
+    showToast('New service added. Fill in the details.');
+}
+
+// ═══ BEFORE & AFTER RENDER ═══
+function renderBA() {
+    const list = document.getElementById('ba-list');
+    list.innerHTML = baItems.map(b => `
+        <div class="svc-admin-item">
+            <div class="field-row">
+                <div class="field">
+                    <label>Before Image URL</label>
+                    <input type="text" value="${b.beforeImg}" onchange="updateBA(${b.id},'beforeImg',this.value)" placeholder="https://...">
+                </div>
+                <div class="field">
+                    <label>After Image URL</label>
+                    <input type="text" value="${b.afterImg}" onchange="updateBA(${b.id},'afterImg',this.value)" placeholder="https://...">
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" value="${b.title}" onchange="updateBA(${b.id},'title',this.value)">
+                </div>
+                <div class="field">
+                    <label>Subtitle</label>
+                    <input type="text" value="${b.desc}" onchange="updateBA(${b.id},'desc',this.value)">
+                </div>
+            </div>
+            <button class="btn btn-sm btn-danger" onclick="deleteBA(${b.id})" style="margin-top:8px;">Delete</button>
+        </div>
+    `).join('');
+}
+
+function updateBA(id, key, val) {
+    const item = baItems.find(b => b.id === id);
+    if (item) item[key] = val;
+}
+
+function deleteBA(id) {
+    baItems = baItems.filter(b => b.id !== id);
+    renderBA();
+}
+
+function addBA() {
+    const newId = Math.max(...baItems.map(b => b.id), 0) + 1;
+    baItems.push({ id: newId, beforeImg: '', afterImg: '', title: 'New Comparison', desc: '' });
+    renderBA();
+}
+
+// ═══ SAVE / LOAD ═══
+function getFieldVal(id) {
+    const el = document.getElementById(id);
+    return el ? el.value : '';
+}
+
+function setFieldVal(id, val) {
+    const el = document.getElementById(id);
+    if (el && val !== undefined && val !== null) el.value = val;
+}
+
+function saveAll() {
+    const data = {
+        hero: {
+            video: getFieldVal('hero-video'),
+            poster: getFieldVal('hero-poster'),
+            eyebrow: getFieldVal('hero-eyebrow'),
+            headline: getFieldVal('hero-headline'),
+            desc: getFieldVal('hero-desc'),
+            btn1: getFieldVal('hero-btn1'),
+            btn2: getFieldVal('hero-btn2'),
+        },
+        about: {
+            label: getFieldVal('about-label'),
+            title: getFieldVal('about-title'),
+            desc1: getFieldVal('about-desc1'),
+            desc2: getFieldVal('about-desc2'),
+            img: getFieldVal('about-img'),
+        },
+        membership: {
+            name: getFieldVal('mem-name'),
+            price: getFieldVal('mem-price'),
+            subtitle: getFieldVal('mem-subtitle'),
+            title: getFieldVal('mem-title'),
+            desc: getFieldVal('mem-desc'),
+            perks: getFieldVal('mem-perks'),
+        },
+        contact: {
+            address: getFieldVal('ct-address'),
+            phone: getFieldVal('ct-phone'),
+            email: getFieldVal('ct-email'),
+            hours: getFieldVal('ct-hours'),
+            map: getFieldVal('ct-map'),
+            ig: getFieldVal('ct-ig'),
+            fb: getFieldVal('ct-fb'),
+        },
+    };
+    localStorage.setItem('fds_data', JSON.stringify(data));
+    localStorage.setItem('fds_services', JSON.stringify(services));
+    localStorage.setItem('fds_ba', JSON.stringify(baItems));
+    showToast('All changes saved successfully!');
+}
+
+function loadAll() {
+    const raw = localStorage.getItem('fds_data');
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.hero) {
+        setFieldVal('hero-video', d.hero.video);
+        setFieldVal('hero-poster', d.hero.poster);
+        setFieldVal('hero-eyebrow', d.hero.eyebrow);
+        setFieldVal('hero-headline', d.hero.headline);
+        setFieldVal('hero-desc', d.hero.desc);
+        setFieldVal('hero-btn1', d.hero.btn1);
+        setFieldVal('hero-btn2', d.hero.btn2);
+    }
+    if (d.about) {
+        setFieldVal('about-label', d.about.label);
+        setFieldVal('about-title', d.about.title);
+        setFieldVal('about-desc1', d.about.desc1);
+        setFieldVal('about-desc2', d.about.desc2);
+        setFieldVal('about-img', d.about.img);
+    }
+    if (d.membership) {
+        setFieldVal('mem-name', d.membership.name);
+        setFieldVal('mem-price', d.membership.price);
+        setFieldVal('mem-subtitle', d.membership.subtitle);
+        setFieldVal('mem-title', d.membership.title);
+        setFieldVal('mem-desc', d.membership.desc);
+        setFieldVal('mem-perks', d.membership.perks);
+    }
+    if (d.contact) {
+        setFieldVal('ct-address', d.contact.address);
+        setFieldVal('ct-phone', d.contact.phone);
+        setFieldVal('ct-email', d.contact.email);
+        setFieldVal('ct-hours', d.contact.hours);
+        setFieldVal('ct-map', d.contact.map);
+        setFieldVal('ct-ig', d.contact.ig);
+        setFieldVal('ct-fb', d.contact.fb);
+    }
+}
+
+// ═══ GENERATE FINAL HTML ═══
+function generateHTML() {
+    const h = {
+        video: getFieldVal('hero-video'),
+        poster: getFieldVal('hero-poster'),
+        eyebrow: getFieldVal('hero-eyebrow'),
+        headline: getFieldVal('hero-headline'),
+        desc: getFieldVal('hero-desc'),
+        btn1: getFieldVal('hero-btn1'),
+        btn2: getFieldVal('hero-btn2'),
+    };
+    const a = {
+        label: getFieldVal('about-label'),
+        title: getFieldVal('about-title'),
+        desc1: getFieldVal('about-desc1'),
+        desc2: getFieldVal('about-desc2'),
+        img: getFieldVal('about-img'),
+    };
+    const m = {
+        name: getFieldVal('mem-name'),
+        price: getFieldVal('mem-price'),
+        subtitle: getFieldVal('mem-subtitle'),
+        title: getFieldVal('mem-title'),
+        desc: getFieldVal('mem-desc'),
+        perks: getFieldVal('mem-perks').split('\n').filter(Boolean),
+    };
+    const c = {
+        address: getFieldVal('ct-address'),
+        phone: getFieldVal('ct-phone'),
+        email: getFieldVal('ct-email'),
+        hours: getFieldVal('ct-hours'),
+        map: getFieldVal('ct-map'),
+    };
+
+    const facials = services.filter(s => s.cat === 'facial');
+    const bodies = services.filter(s => s.cat === 'body');
+    const scalps = services.filter(s => s.cat === 'scalp');
+
+    function svcCards(arr) {
+        return arr.map(s => `
+                    <div class="svc-card reveal">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>${s.name}</h3>
+                                <div class="korean">${s.korean}</div>
+                            </div>
+                            <span class="duration">${s.dur}</span>
+                        </div>
+                        <p>${s.desc}</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item"><span class="svc-price-label">Non-member</span><span class="svc-price-val">${s.price}</span></div>
+                            <div class="svc-price-item"><span class="svc-price-label">Member</span><span class="svc-price-val member">${s.memberPrice}</span></div>
+                        </div>
+                    </div>`).join('');
+    }
+
+    function baCards() {
+        return baItems.map(b => `
+                <div class="reveal">
+                    <div class="ba-item" data-ba>
+                        <img class="ba-before" src="${b.beforeImg || 'https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}" alt="Before">
+                        <img class="ba-after" src="${b.afterImg || 'https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}" alt="After">
+                        <div class="ba-slider-line"></div>
+                        <div class="ba-slider-handle"><svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M8 4l-6 8 6 8M16 4l6 8-6 8"/></svg></div>
+                        <span class="ba-label ba-label-before">Before</span>
+                        <span class="ba-label ba-label-after">After</span>
+                    </div>
+                    <div class="ba-caption"><h4>${b.title}</h4><p>${b.desc}</p></div>
+                </div>`).join('');
+    }
+
+    const videoTag = h.video
+        ? `<video autoplay muted loop playsinline poster="${h.poster}"><source src="${h.video}" type="video/mp4"></video>`
+        : `<img src="${h.poster}" alt="Forest Day Spa">`;
+
+    // Read the prototype.html template structure and inject data
+    // For simplicity, generate a complete standalone HTML
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Day Spa | Korean-Inspired Wellness in Carrollton, TX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        :root { --deep:#0B1A12; --forest:#1A3A28; --forest-mid:#2D5A3D; --forest-light:#4A7C5C; --sage:#7A9E7E; --cream:#F5F0EB; --warm:#EDE7E0; --white:#FEFDFB; --gold:#C9A96E; --gold-light:#E2CFA3; --gold-dark:#A8874E; --text:#1A1A1A; --text-sec:#5A5A5A; --text-muted:#8A8A8A; --border:#DDD8D2; }
+        html { scroll-behavior:smooth; }
+        body { font-family:'Inter',-apple-system,sans-serif; color:var(--text); background:var(--white); line-height:1.6; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+        h1,h2,h3,h4,h5 { font-family:'Playfair Display',Georgia,serif; font-weight:500; }
+        .container { max-width:1200px; margin:0 auto; padding:0 24px; }
+        .header { position:fixed; top:0; left:0; right:0; z-index:100; transition:all .5s cubic-bezier(.16,1,.3,1); }
+        .header-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:24px; transition:padding .5s; }
+        .header.scrolled { background:rgba(11,26,18,.95); backdrop-filter:blur(20px); }
+        .header.scrolled .header-inner { padding:14px 24px; }
+        .logo { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:600; color:white; text-decoration:none; }
+        .nav { display:none; gap:36px; align-items:center; }
+        .nav a { color:rgba(255,255,255,.7); text-decoration:none; font-size:.8rem; font-weight:500; letter-spacing:.12em; text-transform:uppercase; transition:color .3s; }
+        .nav a:hover { color:white; }
+        .header-cta { padding:10px 28px; font-size:.78rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; border:1px solid var(--gold); color:var(--gold); background:transparent; transition:all .3s; }
+        .header-cta:hover { background:var(--gold); color:var(--deep); }
+        .menu-btn { display:flex; flex-direction:column; gap:6px; background:none; border:none; cursor:pointer; padding:4px; }
+        .menu-btn span { width:24px; height:1.5px; background:white; }
+        .mobile-nav { position:fixed; inset:0; z-index:200; background:var(--deep); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; opacity:0; pointer-events:none; transition:opacity .4s; }
+        .mobile-nav.open { opacity:1; pointer-events:all; }
+        .mobile-nav a { font-family:'Playfair Display',serif; font-size:2rem; color:white; text-decoration:none; }
+        .mobile-nav-close { position:absolute; top:24px; right:24px; background:none; border:none; cursor:pointer; color:white; font-size:2rem; }
+        @media(min-width:768px) { .nav{display:flex;} .menu-btn{display:none;} }
+        .hero { position:relative; height:100vh; min-height:600px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:var(--deep); }
+        .hero-video-wrap { position:absolute; inset:0; }
+        .hero-video-wrap video, .hero-video-wrap img { width:100%; height:100%; object-fit:cover; opacity:.55; }
+        .hero-overlay { position:absolute; inset:0; background:linear-gradient(180deg,rgba(11,26,18,.4) 0%,rgba(11,26,18,.15) 40%,rgba(11,26,18,.5) 100%); }
+        .hero-content { position:relative; z-index:2; text-align:center; padding:0 24px; max-width:800px; }
+        .hero-eyebrow { font-size:.72rem; font-weight:600; letter-spacing:.25em; text-transform:uppercase; color:var(--gold); margin-bottom:24px; }
+        .hero h1 { font-size:clamp(2.5rem,6vw,5rem); color:white; line-height:1.1; margin-bottom:24px; }
+        .hero p { font-size:1.05rem; color:rgba(255,255,255,.7); max-width:540px; margin:0 auto 40px; line-height:1.8; }
+        .hero-btns { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+        .btn-gold { padding:16px 40px; font-size:.82rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; border:none; cursor:pointer; background:var(--gold); color:var(--deep); transition:all .3s; font-family:'Inter',sans-serif; }
+        .btn-gold:hover { background:var(--gold-light); }
+        .btn-outline { padding:16px 40px; font-size:.82rem; font-weight:500; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; cursor:pointer; background:transparent; color:white; border:1px solid rgba(255,255,255,.3); transition:all .3s; font-family:'Inter',sans-serif; }
+        .section { padding:100px 0; }
+        .section-dark { background:var(--deep); color:white; }
+        .section-cream { background:var(--cream); }
+        .eyebrow { font-size:.7rem; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; display:inline-block; }
+        .section-title { font-size:clamp(2rem,4vw,3.2rem); line-height:1.15; margin-bottom:20px; }
+        .section-desc { font-size:1rem; color:var(--text-sec); max-width:560px; line-height:1.8; }
+        .section-dark .section-desc { color:rgba(255,255,255,.6); }
+        .divider { width:60px; height:1px; background:var(--gold); margin:20px 0; }
+        .text-center { text-align:center; }
+        .mx-auto { margin-left:auto; margin-right:auto; }
+        .about-grid { display:grid; grid-template-columns:1fr; gap:60px; align-items:center; }
+        .about-img { width:100%; aspect-ratio:4/5; object-fit:cover; }
+        .about-features { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:36px; }
+        .about-feat { padding:20px; border:1px solid var(--border); }
+        .about-feat h4 { font-family:'Inter',sans-serif; font-size:.85rem; font-weight:600; margin-bottom:6px; }
+        .about-feat p { font-size:.78rem; color:var(--text-muted); line-height:1.6; }
+        @media(min-width:768px) { .about-grid{grid-template-columns:5fr 6fr;gap:80px;} }
+        .svc-tabs { display:flex; justify-content:center; gap:0; margin-bottom:56px; border-bottom:1px solid var(--border); }
+        .svc-tab { padding:16px 32px; background:none; border:none; font-family:'Inter',sans-serif; font-size:.82rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--text-muted); cursor:pointer; position:relative; transition:color .3s; }
+        .svc-tab::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:2px; background:var(--gold); transform:scaleX(0); transition:transform .3s; }
+        .svc-tab.active { color:var(--forest); }
+        .svc-tab.active::after { transform:scaleX(1); }
+        .svc-panel { display:none; }
+        .svc-panel.active { display:block; }
+        .svc-grid { display:grid; grid-template-columns:1fr; gap:1px; background:var(--border); }
+        .svc-card { background:white; padding:32px; display:grid; gap:16px; transition:all .3s; }
+        .svc-card:hover { background:var(--cream); }
+        .svc-card-top { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+        .svc-card h3 { font-size:1.3rem; }
+        .svc-card .duration { font-size:.75rem; color:var(--text-muted); white-space:nowrap; }
+        .svc-card .korean { font-size:.78rem; color:var(--sage); margin-top:2px; }
+        .svc-card p { font-size:.88rem; color:var(--text-sec); line-height:1.7; }
+        .svc-prices { display:flex; gap:20px; padding-top:12px; border-top:1px solid var(--border); font-size:.82rem; }
+        .svc-price-item { display:flex; gap:6px; align-items:center; }
+        .svc-price-label { color:var(--text-muted); }
+        .svc-price-val { font-weight:700; color:var(--forest); }
+        .svc-price-val.member { color:var(--gold-dark); }
+        @media(min-width:768px) { .svc-grid{grid-template-columns:1fr 1fr;} }
+        .membership-wrap { display:grid; grid-template-columns:1fr; gap:60px; align-items:center; }
+        .mem-visual { position:relative; padding:60px 40px; background:linear-gradient(135deg,var(--forest) 0%,var(--forest-mid) 100%); text-align:center; }
+        .mem-visual::before { content:''; position:absolute; inset:8px; border:1px solid rgba(255,255,255,.15); }
+        .mem-price-big { font-family:'Playfair Display',serif; font-size:4rem; font-weight:600; color:var(--gold-light); line-height:1; }
+        .mem-price-big span { font-size:1.2rem; font-weight:400; color:rgba(255,255,255,.5); }
+        .mem-name { font-size:.75rem; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.6); margin-top:12px; }
+        .mem-perks { list-style:none; margin-top:24px; }
+        .mem-perks li { display:flex; align-items:flex-start; gap:14px; padding:14px 0; border-bottom:1px solid rgba(255,255,255,.1); font-size:.92rem; color:rgba(255,255,255,.75); line-height:1.6; }
+        .mem-perks li:last-child { border-bottom:none; }
+        .mem-check { width:20px; height:20px; flex-shrink:0; border:1px solid var(--gold); display:flex; align-items:center; justify-content:center; font-size:.65rem; color:var(--gold); margin-top:2px; }
+        @media(min-width:768px) { .membership-wrap{grid-template-columns:5fr 7fr;} }
+        .ba-grid { display:grid; grid-template-columns:1fr; gap:32px; }
+        .ba-item { position:relative; overflow:hidden; cursor:col-resize; user-select:none; aspect-ratio:3/2; }
+        .ba-item img { position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; }
+        .ba-item .ba-after { clip-path:inset(0 50% 0 0); }
+        .ba-slider-line { position:absolute; top:0; bottom:0; left:50%; width:2px; background:white; transform:translateX(-50%); z-index:3; pointer-events:none; }
+        .ba-slider-handle { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px; border-radius:50%; background:white; box-shadow:0 2px 12px rgba(0,0,0,.3); display:flex; align-items:center; justify-content:center; z-index:4; pointer-events:none; }
+        .ba-slider-handle svg { width:20px; height:20px; }
+        .ba-label { position:absolute; bottom:16px; z-index:5; font-size:.7rem; font-weight:600; letter-spacing:.15em; text-transform:uppercase; color:white; background:rgba(0,0,0,.5); padding:6px 14px; pointer-events:none; }
+        .ba-label-before { left:16px; }
+        .ba-label-after { right:16px; }
+        .ba-caption { text-align:center; margin-top:12px; }
+        .ba-caption h4 { font-size:1.1rem; margin-bottom:4px; }
+        .ba-caption p { font-size:.82rem; color:var(--text-muted); }
+        @media(min-width:768px) { .ba-grid{grid-template-columns:1fr 1fr;} }
+        .contact-grid { display:grid; grid-template-columns:1fr; gap:60px; }
+        .contact-items { display:flex; flex-direction:column; gap:28px; }
+        .contact-item { display:flex; gap:20px; align-items:flex-start; }
+        .contact-icon { width:48px; height:48px; flex-shrink:0; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+        .contact-item h4 { font-family:'Inter',sans-serif; font-size:.82rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin-bottom:4px; }
+        .contact-item p,.contact-item a { font-size:.92rem; color:var(--text-sec); text-decoration:none; line-height:1.6; }
+        .map-wrap { aspect-ratio:1/1; background:var(--warm); overflow:hidden; }
+        .map-wrap iframe { width:100%; height:100%; border:none; }
+        @media(min-width:768px) { .contact-grid{grid-template-columns:5fr 7fr;} .map-wrap{aspect-ratio:auto;min-height:480px;} }
+        .footer { background:var(--deep); color:rgba(255,255,255,.5); padding:80px 0 32px; }
+        .footer-grid { display:grid; grid-template-columns:1fr; gap:40px; margin-bottom:60px; }
+        .footer-brand .logo { color:white; display:inline-block; margin-bottom:16px; }
+        .footer-brand p { font-size:.88rem; line-height:1.8; max-width:360px; }
+        .footer-col h4 { font-family:'Inter',sans-serif; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.15em; color:rgba(255,255,255,.3); margin-bottom:20px; }
+        .footer-col a { display:block; font-size:.88rem; color:rgba(255,255,255,.5); text-decoration:none; padding:5px 0; transition:color .3s; }
+        .footer-col a:hover { color:var(--gold); }
+        .footer-bottom { border-top:1px solid rgba(255,255,255,.08); padding-top:24px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; font-size:.78rem; }
+        .reveal { opacity:0; transform:translateY(30px); transition:all .8s cubic-bezier(.16,1,.3,1); }
+        .reveal.vis { opacity:1; transform:translateY(0); }
+        @media(min-width:1024px) { .section{padding:140px 0;} }
+    </style>
+</head>
+<body>
+    <header class="header" id="header">
+        <div class="header-inner">
+            <a href="#" class="logo">Forest Day Spa</a>
+            <nav class="nav">
+                <a href="#about">About</a><a href="#services">Services</a><a href="#membership">Membership</a><a href="#results">Results</a><a href="#contact">Contact</a>
+            </nav>
+            <a href="#contact" class="header-cta">Book Now</a>
+            <button class="menu-btn" id="menuBtn"><span></span><span></span><span></span></button>
+        </div>
+    </header>
+    <nav class="mobile-nav" id="mobileNav">
+        <button class="mobile-nav-close" id="menuClose">&times;</button>
+        <a href="#about" onclick="closeMobile()">About</a><a href="#services" onclick="closeMobile()">Services</a><a href="#membership" onclick="closeMobile()">Membership</a><a href="#results" onclick="closeMobile()">Results</a><a href="#contact" onclick="closeMobile()">Contact</a>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-video-wrap">${videoTag}</div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="hero-eyebrow">${h.eyebrow}</p>
+            <h1>${h.headline}</h1>
+            <p>${h.desc}</p>
+            <div class="hero-btns">
+                <a href="#contact" class="btn-gold">${h.btn1}</a>
+                <a href="#services" class="btn-outline">${h.btn2}</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-cream" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="reveal"><img class="about-img" src="${a.img}" alt="Spa"></div>
+                <div class="reveal">
+                    <span class="eyebrow">${a.label}</span>
+                    <h2 class="section-title">${a.title}</h2>
+                    <div class="divider"></div>
+                    <p class="section-desc">${a.desc1}</p>
+                    <p class="section-desc" style="margin-top:16px">${a.desc2}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="services">
+        <div class="container">
+            <div class="text-center reveal" style="margin-bottom:48px">
+                <span class="eyebrow">Our Services</span>
+                <h2 class="section-title">Treatments Tailored for You</h2>
+            </div>
+            <div class="svc-tabs reveal">
+                <button class="svc-tab active" data-tab="facial">Facial</button>
+                <button class="svc-tab" data-tab="body">Body</button>
+                <button class="svc-tab" data-tab="scalp">Scalp</button>
+            </div>
+            <div class="svc-panel active" id="panel-facial"><div class="svc-grid">${svcCards(facials)}</div></div>
+            <div class="svc-panel" id="panel-body"><div class="svc-grid">${svcCards(bodies)}</div></div>
+            <div class="svc-panel" id="panel-scalp"><div class="svc-grid">${svcCards(scalps)}</div></div>
+        </div>
+    </section>
+
+    <section class="section section-dark" id="membership">
+        <div class="container">
+            <div class="membership-wrap">
+                <div class="mem-visual reveal">
+                    <p class="mem-name">${m.name}</p>
+                    <div class="mem-price-big" style="margin-top:16px">${m.price} <span>/ mo</span></div>
+                    <p style="color:rgba(255,255,255,.5);font-size:.85rem;margin-top:12px">${m.subtitle}</p>
+                    <a href="#contact" class="btn-gold" style="margin-top:28px;display:inline-block">Join Now</a>
+                </div>
+                <div class="reveal">
+                    <span class="eyebrow">Membership</span>
+                    <h2 class="section-title" style="color:white">${m.title}</h2>
+                    <div class="divider"></div>
+                    <p class="section-desc">${m.desc}</p>
+                    <ul class="mem-perks" style="margin-top:32px">
+                        ${m.perks.map(p => `<li><span class="mem-check">&#10003;</span>${p}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-cream" id="results">
+        <div class="container">
+            <div class="text-center reveal" style="margin-bottom:56px">
+                <span class="eyebrow">Real Results</span>
+                <h2 class="section-title">Before &amp; After</h2>
+                <p class="section-desc mx-auto">See the visible difference our treatments make.</p>
+            </div>
+            <div class="ba-grid">${baCards()}</div>
+        </div>
+    </section>
+
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="reveal">
+                    <span class="eyebrow">Visit Us</span>
+                    <h2 class="section-title">Location &amp; Contact</h2>
+                    <div class="divider"></div>
+                    <div class="contact-items" style="margin-top:36px">
+                        <div class="contact-item"><div class="contact-icon">&#128205;</div><div><h4>Address</h4><p>${c.address}</p></div></div>
+                        <div class="contact-item"><div class="contact-icon">&#128222;</div><div><h4>Phone</h4><a href="tel:${c.phone.replace(/[^0-9+]/g,'')}">${c.phone}</a></div></div>
+                        <div class="contact-item"><div class="contact-icon">&#9993;</div><div><h4>Email</h4><a href="mailto:${c.email}">${c.email}</a></div></div>
+                        <div class="contact-item"><div class="contact-icon">&#128336;</div><div><h4>Hours</h4><p>${c.hours}</p></div></div>
+                    </div>
+                    <a href="#" class="btn-gold" style="margin-top:36px;display:inline-block">Book an Appointment</a>
+                </div>
+                ${c.map ? `<div class="map-wrap reveal"><iframe src="${c.map}" allowfullscreen loading="lazy"></iframe></div>` : ''}
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <span>&copy; 2026 Forest Day Spa. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (function(){
+        const h=document.getElementById('header');
+        window.addEventListener('scroll',()=>{h.classList.toggle('scrolled',scrollY>80)},{passive:true});
+        const m=document.getElementById('mobileNav');
+        document.getElementById('menuBtn').addEventListener('click',()=>m.classList.add('open'));
+        document.getElementById('menuClose').addEventListener('click',()=>m.classList.remove('open'));
+        window.closeMobile=()=>m.classList.remove('open');
+        document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}});});
+        document.querySelectorAll('.svc-tab').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.svc-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.svc-panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('panel-'+b.dataset.tab).classList.add('active');});});
+        document.querySelectorAll('[data-ba]').forEach(c=>{const af=c.querySelector('.ba-after'),ln=c.querySelector('.ba-slider-line'),hd=c.querySelector('.ba-slider-handle');let d=false;function u(x){const r=c.getBoundingClientRect();let p=((x-r.left)/r.width)*100;p=Math.max(5,Math.min(95,p));af.style.clipPath='inset(0 '+(100-p)+'% 0 0)';ln.style.left=p+'%';hd.style.left=p+'%';}c.addEventListener('mousedown',e=>{d=true;u(e.clientX);});document.addEventListener('mousemove',e=>{if(d)u(e.clientX);});document.addEventListener('mouseup',()=>{d=false;});c.addEventListener('touchstart',e=>{d=true;u(e.touches[0].clientX);},{passive:true});document.addEventListener('touchmove',e=>{if(d)u(e.touches[0].clientX);},{passive:true});document.addEventListener('touchend',()=>{d=false;});});
+        const o=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:.1,rootMargin:'0px 0px -30px 0px'});document.querySelectorAll('.reveal').forEach(e=>o.observe(e));
+    })();
+    <\/script>
+</body>
+</html>`;
+}
+
+// ═══ PREVIEW ═══
+function refreshPreview() {
+    const frame = document.getElementById('previewFrame');
+    const html = generateHTML();
+    frame.srcdoc = html;
+}
+
+// ═══ EXPORT ═══
+function exportHTML() {
+    const html = generateHTML();
+    document.getElementById('exportCode').value = html;
+    document.getElementById('exportModal').classList.add('show');
+}
+
+function copyExport() {
+    const ta = document.getElementById('exportCode');
+    ta.select();
+    document.execCommand('copy');
+    showToast('Copied to clipboard!');
+}
+
+function downloadExport() {
+    const html = document.getElementById('exportCode').value;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'forest-day-spa.html';
+    a.click(); URL.revokeObjectURL(url);
+    showToast('File downloaded!');
+}
+
+function closeExportModal() {
+    document.getElementById('exportModal').classList.remove('show');
+}
+
+// ═══ TOAST ═══
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ═══ INIT ═══
+loadAll();
+renderServices();
+renderBA();
+</script>
+
+</body>
+</html>

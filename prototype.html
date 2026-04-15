@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Day Spa | Korean-Inspired Wellness in Carrollton, TX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --deep: #0B1A12;
+            --forest: #1A3A28;
+            --forest-mid: #2D5A3D;
+            --forest-light: #4A7C5C;
+            --sage: #7A9E7E;
+            --sage-light: #A8C5AC;
+            --cream: #F5F0EB;
+            --warm: #EDE7E0;
+            --white: #FEFDFB;
+            --gold: #C9A96E;
+            --gold-light: #E2CFA3;
+            --gold-dark: #A8874E;
+            --text: #1A1A1A;
+            --text-sec: #5A5A5A;
+            --text-muted: #8A8A8A;
+            --border: #DDD8D2;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--text);
+            background: var(--white);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5 { font-family: 'Playfair Display', Georgia, serif; font-weight: 500; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* ═══════════ HEADER ═══════════ */
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 24px;
+            transition: padding 0.5s ease;
+        }
+        .header.scrolled {
+            background: rgba(11, 26, 18, 0.95);
+            backdrop-filter: blur(20px);
+        }
+        .header.scrolled .header-inner { padding: 14px 24px; }
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem; font-weight: 600;
+            color: white; text-decoration: none;
+            letter-spacing: 0.02em;
+        }
+        .nav { display: none; gap: 36px; align-items: center; }
+        .nav a {
+            color: rgba(255,255,255,0.7); text-decoration: none;
+            font-size: 0.8rem; font-weight: 500;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            transition: color 0.3s;
+        }
+        .nav a:hover { color: white; }
+        .header-cta {
+            padding: 10px 28px; border-radius: 0;
+            font-size: 0.78rem; font-weight: 600;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            text-decoration: none; border: 1px solid var(--gold);
+            color: var(--gold); background: transparent;
+            transition: all 0.3s;
+        }
+        .header-cta:hover { background: var(--gold); color: var(--deep); }
+        .menu-btn {
+            display: flex; flex-direction: column; gap: 6px;
+            background: none; border: none; cursor: pointer; padding: 4px;
+        }
+        .menu-btn span {
+            width: 24px; height: 1.5px; background: white;
+            transition: all 0.3s;
+        }
+
+        .mobile-nav {
+            position: fixed; inset: 0; z-index: 200;
+            background: var(--deep);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 24px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s;
+        }
+        .mobile-nav.open { opacity: 1; pointer-events: all; }
+        .mobile-nav a {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem; color: white; text-decoration: none;
+            opacity: 0; transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+        .mobile-nav.open a { opacity: 1; transform: translateY(0); }
+        .mobile-nav.open a:nth-child(2) { transition-delay: 0.05s; }
+        .mobile-nav.open a:nth-child(3) { transition-delay: 0.1s; }
+        .mobile-nav.open a:nth-child(4) { transition-delay: 0.15s; }
+        .mobile-nav.open a:nth-child(5) { transition-delay: 0.2s; }
+        .mobile-nav.open a:nth-child(6) { transition-delay: 0.25s; }
+        .mobile-nav-close {
+            position: absolute; top: 24px; right: 24px;
+            background: none; border: none; cursor: pointer;
+            color: white; font-size: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .nav { display: flex; }
+            .menu-btn { display: none; }
+        }
+
+        /* ═══════════ HERO (VIDEO) ═══════════ */
+        .hero {
+            position: relative; height: 100vh; min-height: 600px;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; background: var(--deep);
+        }
+        .hero-video-wrap {
+            position: absolute; inset: 0;
+        }
+        .hero-video-wrap video,
+        .hero-video-wrap img {
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0.55;
+        }
+        .hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(11,26,18,0.4) 0%,
+                rgba(11,26,18,0.15) 40%,
+                rgba(11,26,18,0.5) 100%
+            );
+        }
+        .hero-content {
+            position: relative; z-index: 2;
+            text-align: center; padding: 0 24px;
+            max-width: 800px;
+        }
+        .hero-eyebrow {
+            font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.25em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            color: white; line-height: 1.1;
+            margin-bottom: 24px; letter-spacing: -0.01em;
+        }
+        .hero p {
+            font-size: 1.05rem; color: rgba(255,255,255,0.7);
+            max-width: 540px; margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+        .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .btn-gold {
+            padding: 16px 40px;
+            font-size: 0.82rem; font-weight: 600;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            text-decoration: none; border: none; cursor: pointer;
+            background: var(--gold); color: var(--deep);
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-gold:hover { background: var(--gold-light); transform: translateY(-2px); }
+        .btn-outline {
+            padding: 16px 40px;
+            font-size: 0.82rem; font-weight: 500;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            text-decoration: none; cursor: pointer;
+            background: transparent; color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.05); }
+        .hero-scroll {
+            position: absolute; bottom: 40px; left: 50%;
+            transform: translateX(-50%); z-index: 2;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+        }
+        .hero-scroll span {
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+        }
+        .scroll-line {
+            width: 1px; height: 40px; background: rgba(255,255,255,0.2);
+            position: relative; overflow: hidden;
+        }
+        .scroll-line::after {
+            content: ''; position: absolute; top: -100%; left: 0;
+            width: 1px; height: 100%; background: var(--gold);
+            animation: scrollAnim 2s ease-in-out infinite;
+        }
+        @keyframes scrollAnim {
+            0% { top: -100%; }
+            100% { top: 100%; }
+        }
+
+        /* ═══════════ SECTION UTILS ═══════════ */
+        .section { padding: 100px 0; }
+        .section-dark { background: var(--deep); color: white; }
+        .section-cream { background: var(--cream); }
+        .section-warm { background: var(--warm); }
+
+        .eyebrow {
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 16px;
+            display: inline-block;
+        }
+        .section-dark .eyebrow { color: var(--gold); }
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            line-height: 1.15; margin-bottom: 20px;
+            letter-spacing: -0.01em;
+        }
+        .section-desc {
+            font-size: 1rem; color: var(--text-sec);
+            max-width: 560px; line-height: 1.8;
+        }
+        .section-dark .section-desc { color: rgba(255,255,255,0.6); }
+
+        .divider {
+            width: 60px; height: 1px;
+            background: var(--gold); margin: 20px 0;
+        }
+        .text-center { text-align: center; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+
+        /* ═══════════ ABOUT ═══════════ */
+        .about-grid {
+            display: grid; grid-template-columns: 1fr;
+            gap: 60px; align-items: center;
+        }
+        .about-img-wrap { position: relative; }
+        .about-img {
+            width: 100%; aspect-ratio: 4/5;
+            object-fit: cover;
+        }
+        .about-img-accent {
+            position: absolute; bottom: -20px; right: -20px;
+            width: 180px; padding: 24px;
+            background: var(--forest); color: white;
+            text-align: center;
+        }
+        .about-img-accent .num {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem; font-weight: 600; line-height: 1;
+            color: var(--gold);
+        }
+        .about-img-accent .label {
+            font-size: 0.7rem; letter-spacing: 0.15em;
+            text-transform: uppercase; margin-top: 4px;
+            color: rgba(255,255,255,0.7);
+        }
+        .about-features {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 24px; margin-top: 36px;
+        }
+        .about-feat {
+            padding: 20px; border: 1px solid var(--border);
+        }
+        .about-feat h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;
+        }
+        .about-feat p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.6; }
+
+        @media (min-width: 768px) {
+            .about-grid { grid-template-columns: 5fr 6fr; gap: 80px; }
+        }
+
+        /* ═══════════ SERVICES ═══════════ */
+        .svc-tabs {
+            display: flex; justify-content: center;
+            gap: 0; margin-bottom: 56px;
+            border-bottom: 1px solid var(--border);
+        }
+        .svc-tab {
+            padding: 16px 32px; background: none; border: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--text-muted); cursor: pointer;
+            position: relative; transition: color 0.3s;
+        }
+        .svc-tab::after {
+            content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+            height: 2px; background: var(--gold);
+            transform: scaleX(0); transition: transform 0.3s;
+        }
+        .svc-tab:hover { color: var(--text); }
+        .svc-tab.active { color: var(--forest); }
+        .svc-tab.active::after { transform: scaleX(1); }
+
+        .svc-panel { display: none; }
+        .svc-panel.active { display: block; }
+
+        .svc-grid {
+            display: grid; grid-template-columns: 1fr;
+            gap: 1px; background: var(--border);
+        }
+        .svc-card {
+            background: white; padding: 32px;
+            display: grid; grid-template-columns: 1fr;
+            gap: 16px; transition: all 0.3s;
+        }
+        .svc-card:hover { background: var(--cream); }
+        .svc-card-top {
+            display: flex; justify-content: space-between;
+            align-items: flex-start; gap: 16px;
+        }
+        .svc-card h3 {
+            font-size: 1.3rem; font-weight: 500;
+        }
+        .svc-card .duration {
+            font-size: 0.75rem; color: var(--text-muted);
+            letter-spacing: 0.05em; white-space: nowrap;
+        }
+        .svc-card .korean {
+            font-size: 0.78rem; color: var(--sage);
+            margin-top: 2px;
+        }
+        .svc-card p {
+            font-size: 0.88rem; color: var(--text-sec);
+            line-height: 1.7;
+        }
+        .svc-prices {
+            display: flex; gap: 20px; align-items: center;
+            padding-top: 12px; border-top: 1px solid var(--border);
+            font-size: 0.82rem;
+        }
+        .svc-price-item { display: flex; gap: 6px; align-items: center; }
+        .svc-price-label { color: var(--text-muted); }
+        .svc-price-val { font-weight: 700; color: var(--forest); }
+        .svc-price-val.member { color: var(--gold-dark); }
+
+        @media (min-width: 768px) {
+            .svc-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* ═══════════ MEMBERSHIP ═══════════ */
+        .membership-wrap {
+            display: grid; grid-template-columns: 1fr;
+            gap: 60px; align-items: center;
+        }
+        .mem-visual {
+            position: relative; padding: 60px 40px;
+            background: linear-gradient(135deg, var(--forest) 0%, var(--forest-mid) 100%);
+            text-align: center;
+        }
+        .mem-visual::before {
+            content: ''; position: absolute; inset: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .mem-price-big {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem; font-weight: 600;
+            color: var(--gold-light); line-height: 1;
+        }
+        .mem-price-big span {
+            font-size: 1.2rem; font-weight: 400;
+            color: rgba(255,255,255,0.5);
+        }
+        .mem-name {
+            font-size: 0.75rem; font-weight: 600;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: rgba(255,255,255,0.6); margin-top: 12px;
+        }
+        .mem-perks { list-style: none; margin-top: 24px; }
+        .mem-perks li {
+            display: flex; align-items: flex-start; gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.92rem; color: var(--text-sec);
+            line-height: 1.6;
+        }
+        .mem-perks li:last-child { border-bottom: none; }
+        .mem-check {
+            width: 20px; height: 20px; flex-shrink: 0;
+            border: 1px solid var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.65rem; color: var(--gold); margin-top: 2px;
+        }
+        .section-dark .mem-perks li {
+            border-bottom-color: rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.75);
+        }
+
+        @media (min-width: 768px) {
+            .membership-wrap { grid-template-columns: 5fr 7fr; }
+        }
+
+        /* ═══════════ BEFORE & AFTER ═══════════ */
+        .ba-grid {
+            display: grid; grid-template-columns: 1fr;
+            gap: 32px;
+        }
+        .ba-item {
+            position: relative; overflow: hidden;
+            cursor: col-resize; user-select: none;
+            aspect-ratio: 3/2;
+        }
+        .ba-item img {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .ba-item .ba-after {
+            clip-path: inset(0 50% 0 0);
+            transition: clip-path 0.05s linear;
+        }
+        .ba-slider-line {
+            position: absolute; top: 0; bottom: 0; left: 50%;
+            width: 2px; background: white;
+            transform: translateX(-50%);
+            z-index: 3; pointer-events: none;
+            transition: left 0.05s linear;
+        }
+        .ba-slider-handle {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px; height: 44px; border-radius: 50%;
+            background: white; box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 4; pointer-events: none;
+            transition: left 0.05s linear;
+        }
+        .ba-slider-handle svg { width: 20px; height: 20px; }
+        .ba-label {
+            position: absolute; bottom: 16px; z-index: 5;
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: white; background: rgba(0,0,0,0.5);
+            padding: 6px 14px; backdrop-filter: blur(4px);
+            pointer-events: none;
+        }
+        .ba-label-before { left: 16px; }
+        .ba-label-after { right: 16px; }
+        .ba-caption {
+            text-align: center; margin-top: 12px;
+        }
+        .ba-caption h4 { font-size: 1.1rem; margin-bottom: 4px; }
+        .ba-caption p { font-size: 0.82rem; color: var(--text-muted); }
+
+        @media (min-width: 768px) {
+            .ba-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* ═══════════ CONTACT ═══════════ */
+        .contact-grid {
+            display: grid; grid-template-columns: 1fr;
+            gap: 60px;
+        }
+        .contact-items { display: flex; flex-direction: column; gap: 28px; }
+        .contact-item {
+            display: flex; gap: 20px; align-items: flex-start;
+        }
+        .contact-icon {
+            width: 48px; height: 48px; flex-shrink: 0;
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+        }
+        .contact-item h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+        .contact-item p, .contact-item a {
+            font-size: 0.92rem; color: var(--text-sec);
+            text-decoration: none; line-height: 1.6;
+        }
+        .contact-item a:hover { color: var(--forest); }
+        .map-wrap {
+            aspect-ratio: 1/1; background: var(--warm);
+            overflow: hidden;
+        }
+        .map-wrap iframe { width: 100%; height: 100%; border: none; }
+
+        @media (min-width: 768px) {
+            .contact-grid { grid-template-columns: 5fr 7fr; }
+            .map-wrap { aspect-ratio: auto; min-height: 480px; }
+        }
+
+        /* ═══════════ FOOTER ═══════════ */
+        .footer {
+            background: var(--deep); color: rgba(255,255,255,0.5);
+            padding: 80px 0 32px;
+        }
+        .footer-grid {
+            display: grid; grid-template-columns: 1fr;
+            gap: 40px; margin-bottom: 60px;
+        }
+        .footer-brand .logo { color: white; display: inline-block; margin-bottom: 16px; }
+        .footer-brand p { font-size: 0.88rem; line-height: 1.8; max-width: 360px; }
+        .footer-col h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.72rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.3); margin-bottom: 20px;
+        }
+        .footer-col a {
+            display: block; font-size: 0.88rem;
+            color: rgba(255,255,255,0.5); text-decoration: none;
+            padding: 5px 0; transition: color 0.3s;
+        }
+        .footer-col a:hover { color: var(--gold); }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 24px;
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 16px;
+            font-size: 0.78rem;
+        }
+        .social { display: flex; gap: 16px; }
+        .social a {
+            color: rgba(255,255,255,0.4); text-decoration: none;
+            font-size: 0.85rem; transition: color 0.3s;
+        }
+        .social a:hover { color: var(--gold); }
+
+        @media (min-width: 768px) {
+            .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr; }
+        }
+
+        /* ═══════════ ANIMATIONS ═══════════ */
+        .reveal {
+            opacity: 0; transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.vis { opacity: 1; transform: translateY(0); }
+        .reveal-d1 { transition-delay: 0.1s; }
+        .reveal-d2 { transition-delay: 0.2s; }
+        .reveal-d3 { transition-delay: 0.3s; }
+
+        /* ═══════════ LEAF DECORATIONS ═══════════ */
+        .leaf-deco {
+            position: absolute; opacity: 0.04;
+            font-size: 12rem; z-index: 0; pointer-events: none;
+            font-family: serif;
+        }
+
+        /* ═══════════ RESPONSIVE SPACING ═══════════ */
+        @media (min-width: 1024px) {
+            .section { padding: 140px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <a href="#" class="logo">Forest Day Spa</a>
+            <nav class="nav">
+                <a href="#about">About</a>
+                <a href="#services">Services</a>
+                <a href="#membership">Membership</a>
+                <a href="#results">Results</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <a href="#contact" class="header-cta">Book Now</a>
+            <button class="menu-btn" id="menuBtn" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <nav class="mobile-nav" id="mobileNav">
+        <button class="mobile-nav-close" id="menuClose">&times;</button>
+        <a href="#about" onclick="closeMobile()">About</a>
+        <a href="#services" onclick="closeMobile()">Services</a>
+        <a href="#membership" onclick="closeMobile()">Membership</a>
+        <a href="#results" onclick="closeMobile()">Results</a>
+        <a href="#contact" onclick="closeMobile()">Contact</a>
+        <a href="#contact" onclick="closeMobile()" style="color:var(--gold)">Book Now</a>
+    </nav>
+
+    <!-- ═══ 1. HERO VIDEO ═══ -->
+    <section class="hero">
+        <div class="hero-video-wrap">
+            <!-- Replace src with actual spa video. Fallback to image. -->
+            <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80">
+                <source src="" type="video/mp4">
+            </video>
+            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" alt="Forest Day Spa" style="display:none" id="heroPoster">
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="hero-eyebrow">Korean-Inspired Wellness &middot; Carrollton, TX</p>
+            <h1>Where K-Beauty Meets Forest Tranquility</h1>
+            <p>Advanced Korean skincare techniques in a soothing, nature-inspired space. Rediscover your calm, restore your glow.</p>
+            <div class="hero-btns">
+                <a href="#contact" class="btn-gold">Book Appointment</a>
+                <a href="#services" class="btn-outline">Explore Services</a>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ═══ 2. ABOUT ═══ -->
+    <section class="section section-cream" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-img-wrap reveal">
+                    <img class="about-img" src="https://images.unsplash.com/photo-1600334129128-685054110230?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Spa Interior">
+                    <div class="about-img-accent">
+                        <div class="num">K</div>
+                        <div class="label">Beauty Expert</div>
+                    </div>
+                </div>
+                <div class="reveal reveal-d1">
+                    <span class="eyebrow">About Us</span>
+                    <h2 class="section-title">Precision Care,<br>Rooted in Nature</h2>
+                    <div class="divider"></div>
+                    <p class="section-desc">Forest Day Spa is a premium Korean-inspired wellness spa dedicated to skin health, scalp restoration, and total relaxation. We blend traditional Korean beauty philosophy with modern skin technology to offer not just treatments &mdash; but true transformation.</p>
+                    <p class="section-desc" style="margin-top:16px;">Our lead esthetician trained in Korea and brings years of hands-on experience in advanced facials, devices, and scalp care. Here, you&rsquo;re not just another appointment &mdash; you&rsquo;re a guest we genuinely care for.</p>
+                    <div class="about-features">
+                        <div class="about-feat">
+                            <h4>K-Beauty Expertise</h4>
+                            <p>Korean skincare techniques & professional devices</p>
+                        </div>
+                        <div class="about-feat">
+                            <h4>Nature Inspired</h4>
+                            <p>Forest-level tranquility in every visit</p>
+                        </div>
+                        <div class="about-feat">
+                            <h4>Premium Products</h4>
+                            <p>Professional-grade Korean skincare lines</p>
+                        </div>
+                        <div class="about-feat">
+                            <h4>Personalized Care</h4>
+                            <p>Every treatment adjusted to your needs</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 3. SERVICES ═══ -->
+    <section class="section" id="services">
+        <div class="container">
+            <div class="text-center reveal" style="margin-bottom:48px;">
+                <span class="eyebrow">Our Services</span>
+                <h2 class="section-title">Treatments Tailored for You</h2>
+                <p class="section-desc mx-auto">From K-beauty facials to tension-melting body work and restorative scalp care, every treatment is a journey to renewal.</p>
+            </div>
+
+            <div class="svc-tabs reveal">
+                <button class="svc-tab active" data-tab="facial">Facial</button>
+                <button class="svc-tab" data-tab="body">Body</button>
+                <button class="svc-tab" data-tab="scalp">Scalp</button>
+            </div>
+
+            <!-- FACIAL -->
+            <div class="svc-panel active" id="panel-facial">
+                <div class="svc-grid">
+                    <div class="svc-card reveal">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Stay Beauty</h3>
+                                <div class="korean">베이직 관리</div>
+                            </div>
+                            <span class="duration">60 min</span>
+                        </div>
+                        <p>Deep cleansing, facial massage with d&eacute;collet&eacute; massage, premium ampoules, and a modeling mask for radiant skin.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$119</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$89</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal reveal-d1">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Snow Beauty</h3>
+                                <div class="korean">미백관리</div>
+                            </div>
+                            <span class="duration">80 min</span>
+                        </div>
+                        <p>Brightening facial with 4 premium vitamin ampoules, deep exfoliation, LED therapy, and a premium vitamin mask sheet.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$179</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$149</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Facial Contouring</h3>
+                                <div class="korean">얼굴 윤곽 경락</div>
+                            </div>
+                            <span class="duration">90 min</span>
+                        </div>
+                        <p>Korean Gyeongrak lifting care with advanced devices to firm, contour, and naturally lift the skin for glass-like radiance.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$199</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$179</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal reveal-d1">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Sono Beauty</h3>
+                                <div class="korean">물방울 초음파</div>
+                            </div>
+                            <span class="duration">70 min</span>
+                        </div>
+                        <p>Low-irritation Sono ultrasound facial to calm, balance, and refine skin. Restores clarity and reveals luminous skin.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$149</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$119</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Reset Beauty</h3>
+                                <div class="korean">모공 관리</div>
+                            </div>
+                            <span class="duration">80 min</span>
+                        </div>
+                        <p>Aqua-Peel deeply cleanses pores and infuses hydration, leaving skin clean, smooth, and beautifully radiant.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$179</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$149</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BODY -->
+            <div class="svc-panel" id="panel-body">
+                <div class="svc-grid">
+                    <div class="svc-card reveal">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Gyeongrak Full Body</h3>
+                                <div class="korean">전신경락</div>
+                            </div>
+                            <span class="duration">55-85 min</span>
+                        </div>
+                        <p>Korean-style full body massage with RF heat to relax tight muscles, improve circulation, and provide total body relaxation.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">From</span>
+                                <span class="svc-price-val">$135</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$105</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal reveal-d1">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Partial Contouring</h3>
+                                <div class="korean">바디 부분 경락</div>
+                            </div>
+                            <span class="duration">50-65 min</span>
+                        </div>
+                        <p>Choose upper or lower body. Korean-style focused massage with device to improve circulation and release tightness.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">From</span>
+                                <span class="svc-price-val">$119</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$89</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Cellulite Reduction</h3>
+                                <div class="korean">셀룰라이트 감소</div>
+                            </div>
+                            <span class="duration">55 min</span>
+                        </div>
+                        <p>Targeted body-contouring with Ultrasonic Cavitation and RF to break down cellulite and improve skin firmness.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$149</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$129</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal reveal-d1">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Abdomen &amp; Sides</h3>
+                                <div class="korean">복부 허리라인 슬리밍</div>
+                            </div>
+                            <span class="duration">70 min</span>
+                        </div>
+                        <p>Cavitation on stomach and love handles with skin tightening, followed by lymphatic massage for circulation.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$179</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$159</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Back &amp; Side Reduction</h3>
+                                <div class="korean">등 + 옆구리 슬리밍</div>
+                            </div>
+                            <span class="duration">55 min</span>
+                        </div>
+                        <p>Ultrasonic Cavitation and RF suction to reduce stubborn fat. Smooth back area and refine side waist lines.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$149</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$129</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal reveal-d1">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Dress Care Sculpting</h3>
+                                <div class="korean">쇄골 어깨 라인 슬리밍</div>
+                            </div>
+                            <span class="duration">70 min</span>
+                        </div>
+                        <p>Sculpting treatment to slim and define the collarbone, upper chest, and shoulder area for a refined silhouette.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$179</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$159</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCALP -->
+            <div class="svc-panel" id="panel-scalp">
+                <div class="svc-grid">
+                    <div class="svc-card reveal">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Relaxing Head Spa</h3>
+                                <div class="korean">릴렉싱 헤드스파</div>
+                            </div>
+                            <span class="duration">60 min</span>
+                        </div>
+                        <p>Aromatherapy, Gua-Sha, and scalp massage release tension and restore nervous system balance.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$119</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$89</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal reveal-d1">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Scalp Detox</h3>
+                                <div class="korean">두피 디톡스 헤드스파</div>
+                            </div>
+                            <span class="duration">75 min</span>
+                        </div>
+                        <p>Deep-cleansing detox removes excess oil, buildup, and dead skin cells for healthier hair growth.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$149</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$119</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Hair-Loss Restoration</h3>
+                                <div class="korean">탈모관리 헤드스파</div>
+                            </div>
+                            <span class="duration">90 min</span>
+                        </div>
+                        <p>LED therapy and RF stimulation to restore scalp vitality and promote regrowth for hair thinning.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$189</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$159</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="svc-card reveal reveal-d1">
+                        <div class="svc-card-top">
+                            <div>
+                                <h3>Damaged Hair Restoration</h3>
+                                <div class="korean">손상모 복구관리 헤드스파</div>
+                            </div>
+                            <span class="duration">90 min</span>
+                        </div>
+                        <p>Intensive scalp and hair repair for chemically damaged hair. Restore moisture, strength, and quality.</p>
+                        <div class="svc-prices">
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Non-member</span>
+                                <span class="svc-price-val">$189</span>
+                            </div>
+                            <div class="svc-price-item">
+                                <span class="svc-price-label">Member</span>
+                                <span class="svc-price-val member">$159</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 4. MEMBERSHIP ═══ -->
+    <section class="section section-dark" id="membership" style="position:relative;overflow:hidden;">
+        <div class="leaf-deco" style="top:-60px;right:-80px;">&#127807;</div>
+        <div class="container">
+            <div class="membership-wrap">
+                <div class="mem-visual reveal">
+                    <p class="mem-name">SOOP Membership</p>
+                    <div class="mem-price-big" style="margin-top:16px;">$89 <span>/ mo</span></div>
+                    <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-top:12px;">One included service credit per month</p>
+                    <a href="#contact" class="btn-gold" style="margin-top:28px;display:inline-block;">Join Now</a>
+                </div>
+                <div class="reveal reveal-d1">
+                    <span class="eyebrow">Membership</span>
+                    <h2 class="section-title" style="color:white;">Invest in Your<br>Ongoing Wellness</h2>
+                    <div class="divider"></div>
+                    <p class="section-desc">Designed for consistent, intentional care. Enjoy member-exclusive pricing and flexible benefits with no long-term commitment.</p>
+                    <ul class="mem-perks" style="margin-top:32px;">
+                        <li>
+                            <span class="mem-check">&#10003;</span>
+                            Choose one service per month from Facial, Body, or Scalp Care menu
+                        </li>
+                        <li>
+                            <span class="mem-check">&#10003;</span>
+                            Upgrade anytime &mdash; pay only the difference
+                        </li>
+                        <li>
+                            <span class="mem-check">&#10003;</span>
+                            Member-exclusive service pricing on all treatments
+                        </li>
+                        <li>
+                            <span class="mem-check">&#10003;</span>
+                            Birthday month: 5% off retail products (up to $300)
+                        </li>
+                        <li>
+                            <span class="mem-check">&#10003;</span>
+                            No long-term commitment &mdash; flexible and easy to maintain
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 5. BEFORE & AFTER ═══ -->
+    <section class="section section-cream" id="results">
+        <div class="container">
+            <div class="text-center reveal" style="margin-bottom:56px;">
+                <span class="eyebrow">Real Results</span>
+                <h2 class="section-title">Before &amp; After</h2>
+                <p class="section-desc mx-auto">See the visible difference our treatments make. Drag the slider to compare results.</p>
+            </div>
+
+            <div class="ba-grid">
+                <div class="reveal">
+                    <div class="ba-item" data-ba>
+                        <img class="ba-before" src="https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Before Treatment">
+                        <img class="ba-after" src="https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="After Treatment">
+                        <div class="ba-slider-line"></div>
+                        <div class="ba-slider-handle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M8 4l-6 8 6 8M16 4l6 8-6 8"/></svg>
+                        </div>
+                        <span class="ba-label ba-label-before">Before</span>
+                        <span class="ba-label ba-label-after">After</span>
+                    </div>
+                    <div class="ba-caption">
+                        <h4>Facial Contouring</h4>
+                        <p>After 3 sessions &middot; Gyeongrak lifting care</p>
+                    </div>
+                </div>
+                <div class="reveal reveal-d1">
+                    <div class="ba-item" data-ba>
+                        <img class="ba-before" src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Before Treatment">
+                        <img class="ba-after" src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="After Treatment">
+                        <div class="ba-slider-line"></div>
+                        <div class="ba-slider-handle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M8 4l-6 8 6 8M16 4l6 8-6 8"/></svg>
+                        </div>
+                        <span class="ba-label ba-label-before">Before</span>
+                        <span class="ba-label ba-label-after">After</span>
+                    </div>
+                    <div class="ba-caption">
+                        <h4>Scalp Detox</h4>
+                        <p>After 4 sessions &middot; Deep-cleansing detox</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ 6. CONTACT ═══ -->
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="reveal">
+                    <span class="eyebrow">Visit Us</span>
+                    <h2 class="section-title">Location &amp;<br>Contact</h2>
+                    <div class="divider"></div>
+                    <div class="contact-items" style="margin-top:36px;">
+                        <div class="contact-item">
+                            <div class="contact-icon">&#128205;</div>
+                            <div>
+                                <h4>Address</h4>
+                                <p>2625 Old Denton Rd, Ste 450<br>Carrollton, TX 75007</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">&#128222;</div>
+                            <div>
+                                <h4>Phone</h4>
+                                <a href="tel:+19728009730">(972) 800-9730</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">&#9993;</div>
+                            <div>
+                                <h4>Email</h4>
+                                <a href="mailto:hello@forestdayspa.com">hello@forestdayspa.com</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">&#128336;</div>
+                            <div>
+                                <h4>Hours</h4>
+                                <p>Mon &ndash; Sat: 10:00 AM &ndash; 7:00 PM<br>Sun: By Appointment Only</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn-gold" style="margin-top:36px;display:inline-block;">Book an Appointment</a>
+                </div>
+                <div class="map-wrap reveal reveal-d1">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3347.5!2d-96.9!3d32.98!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzLCsDU4JzQ4LjAiTiA5NsKwNTQnMDAuMCJX!5e0!3m2!1sen!2sus!4v1"
+                        allowfullscreen="" loading="lazy"
+                        title="Forest Day Spa Location">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">Forest Day Spa</a>
+                    <p>Korean-inspired wellness spa dedicated to skin health, scalp restoration, and total relaxation in Carrollton, TX.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Services</h4>
+                    <a href="#services">Facial Care</a>
+                    <a href="#services">Body Care</a>
+                    <a href="#services">Scalp Care</a>
+                    <a href="#membership">Membership</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="#about">About Us</a>
+                    <a href="#results">Results</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cancellation Policy</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; 2026 Forest Day Spa. All rights reserved.</span>
+                <div class="social">
+                    <a href="#">Instagram</a>
+                    <a href="#">Facebook</a>
+                    <a href="#">Yelp</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (function() {
+        // Video fallback
+        const vid = document.querySelector('.hero-video-wrap video');
+        const poster = document.getElementById('heroPoster');
+        if (vid && !vid.querySelector('source').src) {
+            vid.style.display = 'none';
+            poster.style.display = 'block';
+        }
+
+        // Header
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', scrollY > 80);
+        }, { passive: true });
+
+        // Mobile nav
+        const mob = document.getElementById('mobileNav');
+        document.getElementById('menuBtn').addEventListener('click', () => mob.classList.add('open'));
+        document.getElementById('menuClose').addEventListener('click', () => mob.classList.remove('open'));
+        window.closeMobile = () => mob.classList.remove('open');
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                const t = document.querySelector(a.getAttribute('href'));
+                if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            });
+        });
+
+        // Service tabs
+        document.querySelectorAll('.svc-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.svc-tab').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.svc-panel').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+                document.querySelectorAll('.svc-panel.active .reveal').forEach(el => {
+                    el.classList.remove('vis');
+                    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('vis')));
+                });
+            });
+        });
+
+        // Before & After sliders
+        document.querySelectorAll('[data-ba]').forEach(container => {
+            const afterImg = container.querySelector('.ba-after');
+            const line = container.querySelector('.ba-slider-line');
+            const handle = container.querySelector('.ba-slider-handle');
+            let isDragging = false;
+
+            function updateSlider(x) {
+                const rect = container.getBoundingClientRect();
+                let pct = ((x - rect.left) / rect.width) * 100;
+                pct = Math.max(5, Math.min(95, pct));
+                afterImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+                line.style.left = pct + '%';
+                handle.style.left = pct + '%';
+            }
+
+            container.addEventListener('mousedown', e => { isDragging = true; updateSlider(e.clientX); });
+            document.addEventListener('mousemove', e => { if (isDragging) updateSlider(e.clientX); });
+            document.addEventListener('mouseup', () => { isDragging = false; });
+
+            container.addEventListener('touchstart', e => { isDragging = true; updateSlider(e.touches[0].clientX); }, { passive: true });
+            document.addEventListener('touchmove', e => { if (isDragging) updateSlider(e.touches[0].clientX); }, { passive: true });
+            document.addEventListener('touchend', () => { isDragging = false; });
+        });
+
+        // Scroll reveal
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+        }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    })();
+    </script>
+
+</body>
+</html>

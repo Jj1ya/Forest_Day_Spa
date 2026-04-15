@@ -1,0 +1,92 @@
+{
+  "hero": {
+    "videoUrl": "",
+    "posterUrl": "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80",
+    "eyebrow": "Korean-Inspired Wellness · Carrollton, TX",
+    "headline": "Where K-Beauty Meets Forest Tranquility",
+    "description": "Advanced Korean skincare techniques in a soothing, nature-inspired space. Rediscover your calm, restore your glow.",
+    "primaryBtn": "Book Appointment",
+    "secondaryBtn": "Explore Services"
+  },
+  "about": {
+    "label": "About Us",
+    "title": "Precision Care, Rooted in Nature",
+    "paragraphs": [
+      "Forest Day Spa is a premium Korean-inspired wellness spa dedicated to skin health, scalp restoration, and total relaxation. We blend traditional Korean beauty philosophy with modern skin technology to offer not just treatments — but true transformation.",
+      "Our lead esthetician trained in Korea and brings years of hands-on experience in advanced facials, devices, and scalp care. Here, you're not just another appointment — you're a guest we genuinely care for."
+    ],
+    "imageUrl": "https://images.unsplash.com/photo-1600334129128-685054110230?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "features": [
+      { "title": "K-Beauty Expertise", "desc": "Korean skincare techniques & professional devices" },
+      { "title": "Nature Inspired", "desc": "Forest-level tranquility in every visit" },
+      { "title": "Premium Products", "desc": "Professional-grade Korean skincare lines" },
+      { "title": "Personalized Care", "desc": "Every treatment adjusted to your needs" }
+    ]
+  },
+  "services": [
+    { "id": 1, "category": "facial", "name": "Stay Beauty", "korean": "베이직 관리", "duration": "60 min", "description": "Deep cleansing, facial massage with décolleté massage, premium ampoules, and a modeling mask for radiant skin.", "price": "$119", "memberPrice": "$89" },
+    { "id": 2, "category": "facial", "name": "Snow Beauty", "korean": "미백관리", "duration": "80 min", "description": "Brightening facial with 4 premium vitamin ampoules, deep exfoliation, LED therapy, and a premium vitamin mask sheet.", "price": "$179", "memberPrice": "$149" },
+    { "id": 3, "category": "facial", "name": "Facial Contouring", "korean": "얼굴 윤곽 경락", "duration": "90 min", "description": "Korean Gyeongrak lifting care with advanced devices to firm, contour, and naturally lift the skin.", "price": "$199", "memberPrice": "$179" },
+    { "id": 4, "category": "facial", "name": "Sono Beauty", "korean": "물방울 초음파", "duration": "70 min", "description": "Low-irritation Sono ultrasound facial to calm, balance, and refine skin for natural luminosity.", "price": "$149", "memberPrice": "$119" },
+    { "id": 5, "category": "facial", "name": "Reset Beauty", "korean": "모공 관리", "duration": "80 min", "description": "Aqua-Peel deeply cleanses pores and infuses hydration for beautifully radiant skin.", "price": "$179", "memberPrice": "$149" },
+    { "id": 6, "category": "body", "name": "Gyeongrak Full Body", "korean": "전신경락", "duration": "55–85 min", "description": "Korean-style full body massage with RF heat for total relaxation and improved circulation.", "price": "From $135", "memberPrice": "From $105" },
+    { "id": 7, "category": "body", "name": "Partial Contouring", "korean": "바디 부분 경락", "duration": "50–65 min", "description": "Choose upper or lower body for focused massage and circulation improvement.", "price": "From $119", "memberPrice": "From $89" },
+    { "id": 8, "category": "body", "name": "Cellulite Reduction", "korean": "셀룰라이트 감소", "duration": "55 min", "description": "Ultrasonic Cavitation and RF to break down stubborn cellulite and improve skin firmness.", "price": "$149", "memberPrice": "$129" },
+    { "id": 9, "category": "body", "name": "Abdomen & Sides", "korean": "복부 허리라인 슬리밍", "duration": "70 min", "description": "Cavitation on stomach and love handles with skin tightening and lymphatic massage.", "price": "$179", "memberPrice": "$159" },
+    { "id": 10, "category": "body", "name": "Back & Side Reduction", "korean": "등 + 옆구리 슬리밍", "duration": "55 min", "description": "Ultrasonic Cavitation and RF suction for back area sculpting and side waist refinement.", "price": "$149", "memberPrice": "$129" },
+    { "id": 11, "category": "body", "name": "Dress Care Sculpting", "korean": "쇄골 어깨 라인 슬리밍", "duration": "70 min", "description": "Sculpting treatment for collarbone, upper chest, and shoulder definition using RF.", "price": "$179", "memberPrice": "$159" },
+    { "id": 12, "category": "scalp", "name": "Relaxing Head Spa", "korean": "릴렉싱 헤드스파", "duration": "60 min", "description": "Aromatherapy, Gua-Sha, and scalp massage for tension release and nervous system balance.", "price": "$119", "memberPrice": "$89" },
+    { "id": 13, "category": "scalp", "name": "Scalp Detox", "korean": "두피 디톡스 헤드스파", "duration": "75 min", "description": "Deep-cleansing detox to remove buildup and create a foundation for healthier hair growth.", "price": "$149", "memberPrice": "$119" },
+    { "id": 14, "category": "scalp", "name": "Hair-Loss Restoration", "korean": "탈모관리 헤드스파", "duration": "90 min", "description": "LED therapy and RF stimulation to restore scalp vitality and promote regrowth.", "price": "$189", "memberPrice": "$159" },
+    { "id": 15, "category": "scalp", "name": "Damaged Hair Restoration", "korean": "손상모 복구관리 헤드스파", "duration": "90 min", "description": "Intensive scalp and hair repair treatment for chemically damaged hair.", "price": "$189", "memberPrice": "$159" }
+  ],
+  "membership": {
+    "name": "SOOP Membership",
+    "price": "$89",
+    "subtitle": "One included service credit per month",
+    "title": "Invest in Your Ongoing Wellness",
+    "description": "Designed for consistent, intentional care. Enjoy member-exclusive pricing and flexible benefits with no long-term commitment.",
+    "perks": [
+      "Choose one service per month from Facial, Body, or Scalp Care menu",
+      "Upgrade anytime — pay only the difference",
+      "Member-exclusive service pricing on all treatments",
+      "Birthday month: 5% off retail products (up to $300)",
+      "No long-term commitment — flexible and easy to maintain"
+    ]
+  },
+  "beforeAfter": [
+    { "id": 1, "beforeImg": "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=800&q=80", "afterImg": "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&q=80", "title": "Facial Contouring", "desc": "After 3 sessions · Gyeongrak lifting care" },
+    { "id": 2, "beforeImg": "https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=800&q=80", "afterImg": "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=800&q=80", "title": "Scalp Detox", "desc": "After 4 sessions · Deep-cleansing detox" }
+  ],
+  "testimonials": [
+    { "id": 1, "text": "Absolutely the best scalp treatment I've had in Carrollton. The 60-minute relaxing head spa melted all my stress away. I'm a member now and never looking back!", "author": "Sarah J.", "location": "Carrollton, TX", "rating": 5 },
+    { "id": 2, "text": "The Facial Contouring treatment is incredible. My skin looked lifted and glowing for days. You can tell the esthetician really knows Korean skincare techniques.", "author": "Michelle K.", "location": "Dallas, TX", "rating": 5 },
+    { "id": 3, "text": "I love the SOOP membership. Getting monthly treatments at member pricing makes it so affordable. The atmosphere is serene and the staff is so caring.", "author": "Jennifer L.", "location": "Plano, TX", "rating": 5 },
+    { "id": 4, "text": "I drove 30 minutes for this place and it's absolutely worth it. The Snow Beauty facial gave me the best glow I've ever had. Korean skincare is no joke!", "author": "Amanda R.", "location": "Frisco, TX", "rating": 5 }
+  ],
+  "gallery": [
+    "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&q=80",
+    "https://images.unsplash.com/photo-1600334129128-685054110230?w=600&q=80",
+    "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=600&q=80",
+    "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&q=80",
+    "https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=600&q=80",
+    "https://images.unsplash.com/photo-1507652313519-d4e9174996dd?w=600&q=80"
+  ],
+  "faq": [
+    { "q": "What makes your facials different?", "a": "Our facials are based on Korean skincare techniques that focus on circulation, lymphatic flow, and skin balance. Hands-on massage is combined with professional devices for visible glow and long-term skin health." },
+    { "q": "Can scalp care help with hair loss?", "a": "Yes. By improving circulation and scalp balance, our treatments help reduce hair loss caused by stress, poor circulation, or scalp buildup. Monthly care is ideal for maintenance." },
+    { "q": "What is the SOOP Membership?", "a": "SOOP Membership includes one service credit per month for facial, body, or scalp care, along with member-exclusive pricing. It's $89/month with no long-term commitment." },
+    { "q": "What is Gyeongrak deep tissue massage?", "a": "Gyeongrak is a Korean technique that works along circulation and energy pathways. It focuses on depth and direction, helping reduce stagnation, swelling, and tightness." },
+    { "q": "Do I need an appointment?", "a": "Yes, we are highly booked. Walk-ins are not guaranteed. Please contact us by phone or our booking system to reserve your time." },
+    { "q": "What is your cancellation policy?", "a": "Please notify us at least 24 hours in advance to avoid a 50% cancellation fee. For membership cancellation, 90-day notice is required." }
+  ],
+  "contact": {
+    "address": "2625 Old Denton Rd, Ste 450, Carrollton, TX 75007",
+    "phone": "(972) 800-9730",
+    "email": "hello@forestdayspa.com",
+    "hours": "Mon – Sat: 10:00 AM – 7:00 PM | Sun: By Appointment Only",
+    "mapUrl": "",
+    "instagram": "",
+    "facebook": ""
+  }
+}

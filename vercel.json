@@ -1,0 +1,13 @@
+{
+  "installCommand": "npm install && cd client && npm install",
+  "buildCommand": "cd client && npm run build",
+  "outputDirectory": "client/dist",
+  "functions": {
+    "api/site.js": {
+      "includeFiles": "server/data/site.json"
+    }
+  },
+  "rewrites": [
+    { "source": "/admin/:path*", "destination": "/index.html" }
+  ]
+}
