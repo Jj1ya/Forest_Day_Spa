@@ -50,10 +50,10 @@ export default function Header() {
             ))}
           </nav>
 
-          <button onClick={() => scrollTo('#contact')}
+          <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer"
             className="hidden md:inline-flex btn-outline-forest">
             Book Now
-          </button>
+          </a>
 
           <button onClick={() => setMenuOpen(true)} className="md:hidden flex flex-col gap-1.5 p-1"
             aria-label="Open menu">
@@ -77,10 +77,10 @@ export default function Header() {
             {l.label}
           </button>
         ))}
-        <button onClick={() => scrollTo('#contact')}
+        <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer"
           className="font-serif text-3xl text-gold-400">
           Book Now
-        </button>
+        </a>
       </div>
     </>
   );

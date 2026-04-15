@@ -26,7 +26,7 @@ export default function Membership() {
               {m.price} <span className="text-xl font-normal text-white/50">/ mo</span>
             </div>
             <p className="text-sm text-white/50 mt-3">{m.subtitle}</p>
-            <a href="#contact" className="btn-gold mt-8 inline-block">Join Now</a>
+            <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer" className="btn-gold mt-8 inline-block">Join Now</a>
           </div>
 
           {/* Details */}

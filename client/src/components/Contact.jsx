@@ -32,9 +32,9 @@ export default function Contact() {
                 <ContactItem icon="🕐" title="Hours" content={c.hours} />
               </div>
 
-              <button onClick={() => setShowBooking(true)} className="btn-gold mt-10">
+              <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer" className="btn-gold mt-10">
                 Book an Appointment
-              </button>
+              </a>
             </div>
 
             <div ref={ref2}

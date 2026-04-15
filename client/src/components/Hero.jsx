@@ -35,7 +35,7 @@ export default function Hero() {
           {h.description}
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
-          <a href="#contact" className="btn-gold">{h.primaryBtn}</a>
+          <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer" className="btn-gold">{h.primaryBtn}</a>
           <a href="#services" className="btn-outline-white">{h.secondaryBtn}</a>
         </div>
       </div>

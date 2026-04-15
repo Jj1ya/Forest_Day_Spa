@@ -19,7 +19,7 @@ export default function FloatingCTA() {
       <div className={`fixed bottom-0 left-0 right-0 z-40 md:hidden bg-forest-700/95 backdrop-blur-lg
         border-t border-white/10 px-4 py-3 transition-transform duration-300
         ${show ? 'translate-y-0' : 'translate-y-full'}`}>
-        <a href="#contact"
+        <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer"
           className="btn-gold w-full justify-center text-center">
           Book Appointment
         </a>
