@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10 mb-16">
           {/* Brand */}
           <div>
-            <a href="#" className="font-serif text-2xl font-semibold text-white block mb-4">
+            <a href="#" className="font-serif text-3xl font-semibold text-white block mb-4">
               Forest Day Spa
             </a>
             <p className="text-sm leading-relaxed max-w-xs">
@@ -34,7 +34,7 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h4 className="text-[0.72rem] font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Services</h4>
+            <h4 className="text-xs font-display font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Services</h4>
             <a href="#services" className="block text-sm py-1 hover:text-gold-400 transition-colors">Facial Care</a>
             <a href="#services" className="block text-sm py-1 hover:text-gold-400 transition-colors">Body Care</a>
             <a href="#services" className="block text-sm py-1 hover:text-gold-400 transition-colors">Scalp Care</a>
@@ -43,7 +43,7 @@ export default function Footer() {
 
           {/* Company */}
           <div>
-            <h4 className="text-[0.72rem] font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Company</h4>
+            <h4 className="text-xs font-display font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Company</h4>
             <a href="#about" className="block text-sm py-1 hover:text-gold-400 transition-colors">About Us</a>
             <a href="#results" className="block text-sm py-1 hover:text-gold-400 transition-colors">Results</a>
             <a href="#contact" className="block text-sm py-1 hover:text-gold-400 transition-colors">Contact</a>
@@ -52,7 +52,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="text-[0.72rem] font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Contact</h4>
+            <h4 className="text-xs font-display font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Contact</h4>
             {c && (
               <>
                 <p className="text-sm py-1">{c.address}</p>

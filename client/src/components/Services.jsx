@@ -34,7 +34,7 @@ export default function Services() {
         <div className="flex justify-center border-b border-gray-200 mb-14">
           {TABS.map(t => (
             <button key={t.key} onClick={() => setActive(t.key)}
-              className={`relative px-8 py-4 text-[0.82rem] font-semibold uppercase tracking-wider
+              className={`relative px-8 py-4 text-sm font-display font-bold uppercase tracking-wider
                 transition-colors ${active === t.key ? 'text-forest-500' : 'text-gray-400 hover:text-gray-600'}`}>
               {t.label}
               <span className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gold-400
@@ -66,12 +66,12 @@ function ServiceCard({ service: s, delay }) {
       style={{ transitionDuration: '0.7s' }}>
       <div className="flex justify-between items-start gap-4 mb-1">
         <div>
-          <h3 className="font-serif text-xl md:text-[1.3rem]">{s.name}</h3>
-          <span className="text-[0.78rem] text-forest-300">{s.korean}</span>
+          <h3 className="font-serif text-2xl md:text-[1.5rem]">{s.name}</h3>
+          <span className="text-sm text-forest-300 font-display">{s.korean}</span>
         </div>
         <span className="text-xs text-gray-400 whitespace-nowrap mt-1">{s.duration}</span>
       </div>
-      <p className="text-sm text-gray-500 leading-relaxed my-4">{s.description}</p>
+      <p className="text-base text-gray-500 leading-relaxed my-4">{s.description}</p>
       <div className="flex gap-5 pt-3 border-t border-gray-100 text-[0.82rem]">
         <div className="flex items-center gap-1.5">
           <span className="text-gray-400">Non-member</span>

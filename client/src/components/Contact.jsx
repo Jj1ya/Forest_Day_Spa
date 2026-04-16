@@ -70,8 +70,8 @@ function ContactItem({ icon, title, content }) {
         {icon}
       </div>
       <div>
-        <h4 className="font-sans text-xs font-bold uppercase tracking-wider mb-1">{title}</h4>
-        <div className="text-sm text-gray-500 leading-relaxed">{content}</div>
+        <h4 className="font-display text-sm font-bold uppercase tracking-wider mb-1">{title}</h4>
+        <div className="text-base text-gray-500 leading-relaxed">{content}</div>
       </div>
     </div>
   );

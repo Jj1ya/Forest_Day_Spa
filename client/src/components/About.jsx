@@ -35,8 +35,8 @@ export default function About() {
             <div className="grid grid-cols-2 gap-5 mt-8">
               {a.features.map((f, i) => (
                 <div key={i} className="p-5 border border-gray-200 hover:border-gold-400/50 transition-colors">
-                  <h4 className="font-sans text-sm font-semibold mb-1">{f.title}</h4>
-                  <p className="text-xs text-gray-400 leading-relaxed">{f.desc}</p>
+                  <h4 className="font-display text-sm font-bold mb-1">{f.title}</h4>
+                  <p className="text-sm text-gray-400 leading-relaxed">{f.desc}</p>
                 </div>
               ))}
             </div>

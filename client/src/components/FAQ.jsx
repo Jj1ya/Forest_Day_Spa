@@ -37,7 +37,7 @@ function FAQItem({ item, isOpen, onToggle }) {
       className={`border-b border-gray-200 transition-all duration-700 ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
       <button onClick={onToggle}
         className="w-full flex items-center justify-between py-6 text-left group">
-        <span className="font-sans text-base font-semibold text-gray-800 group-hover:text-forest-500 transition-colors pr-4">
+        <span className="font-display text-lg font-bold text-gray-800 group-hover:text-forest-500 transition-colors pr-4">
           {item.q}
         </span>
         <span className={`w-7 h-7 rounded-full border flex items-center justify-center text-sm shrink-0
@@ -50,7 +50,7 @@ function FAQItem({ item, isOpen, onToggle }) {
       </button>
       <div className={`overflow-hidden transition-all duration-400 ease-out
         ${isOpen ? 'max-h-60 pb-6' : 'max-h-0'}`}>
-        <p className="text-sm text-gray-500 leading-relaxed pr-12">{item.a}</p>
+        <p className="text-base text-gray-500 leading-relaxed pr-12">{item.a}</p>
       </div>
     </div>
   );

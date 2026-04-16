@@ -34,16 +34,16 @@
     @apply py-24 md:py-32 lg:py-40;
   }
   .eyebrow {
-    @apply inline-block text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-gold-400 mb-4;
+    @apply inline-block text-xs font-display font-bold uppercase tracking-[0.2em] text-gold-400 mb-4;
   }
   .heading-lg {
-    @apply font-serif text-4xl md:text-5xl lg:text-[3.2rem] font-medium leading-[1.15] tracking-tight;
+    @apply font-serif text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.1] tracking-tight;
   }
   .heading-md {
-    @apply font-serif text-2xl md:text-3xl font-medium leading-tight;
+    @apply font-serif text-3xl md:text-4xl font-medium leading-tight;
   }
   .desc-text {
-    @apply text-base text-gray-500 leading-relaxed max-w-xl;
+    @apply text-lg text-gray-500 leading-relaxed max-w-xl;
   }
 }
 

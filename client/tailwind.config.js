@@ -27,8 +27,9 @@ export default {
         warm: '#EDE7E0',
       },
       fontFamily: {
-        serif: ['Playfair Display', 'Georgia', 'serif'],
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+        display: ['Quicksand', 'sans-serif'],
+        sans: ['Nunito', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       animation: {
         'scroll-line': 'scrollLine 2s ease-in-out infinite',

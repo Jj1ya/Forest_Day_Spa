@@ -25,13 +25,13 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-[800px]">
-        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.25em] text-gold-400 mb-6">
+        <p className="text-xs font-display font-bold uppercase tracking-[0.25em] text-gold-400 mb-6">
           {h.eyebrow}
         </p>
-        <h1 className="font-serif text-[clamp(2.5rem,6vw,5rem)] text-white leading-[1.1] mb-6">
+        <h1 className="font-serif text-[clamp(3rem,7vw,6rem)] text-white leading-[1.05] mb-8 font-semibold">
           {h.headline}
         </h1>
-        <p className="text-lg text-white/70 max-w-[540px] mx-auto mb-10 leading-relaxed">
+        <p className="text-xl text-white/70 max-w-[560px] mx-auto mb-12 leading-relaxed">
           {h.description}
         </p>
         <div className="flex gap-4 justify-center flex-wrap">

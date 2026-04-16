@@ -37,14 +37,14 @@ export default function Header() {
         <div className="max-w-[1200px] mx-auto flex items-center justify-between px-6 transition-all duration-500"
           style={{ padding: scrolled ? '14px 24px' : '24px' }}
         >
-          <a href="#" className="font-serif text-2xl font-semibold text-white tracking-tight">
+          <a href="#" className="font-serif text-3xl font-semibold text-white tracking-tight">
             Forest Day Spa
           </a>
 
           <nav className="hidden md:flex items-center gap-9">
             {NAV_LINKS.map(l => (
               <button key={l.href} onClick={() => scrollTo(l.href)}
-                className="text-white/70 hover:text-white text-[0.8rem] font-medium uppercase tracking-[0.12em] transition-colors">
+                className="text-white/70 hover:text-white text-sm font-display font-semibold uppercase tracking-[0.12em] transition-colors">
                 {l.label}
               </button>
             ))}

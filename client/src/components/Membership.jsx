@@ -21,7 +21,7 @@ export default function Membership() {
             className={`relative p-12 md:p-16 bg-gradient-to-br from-forest-600 to-forest-500 text-center
               transition-all duration-700 ${vis1 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
             <div className="absolute inset-2 border border-white/15 pointer-events-none" />
-            <p className="text-[0.75rem] font-semibold uppercase tracking-[0.2em] text-white/60">{m.name}</p>
+            <p className="text-sm font-display font-bold uppercase tracking-[0.2em] text-white/60">{m.name}</p>
             <div className="font-serif text-6xl font-semibold text-gold-300 leading-none mt-4">
               {m.price} <span className="text-xl font-normal text-white/50">/ mo</span>
             </div>
@@ -43,7 +43,7 @@ export default function Membership() {
                   <span className="w-5 h-5 shrink-0 border border-gold-400 flex items-center justify-center text-[0.65rem] text-gold-400 mt-0.5">
                     ✓
                   </span>
-                  <span className="text-sm text-white/75 leading-relaxed">{p}</span>
+                  <span className="text-base text-white/75 leading-relaxed">{p}</span>
                 </li>
               ))}
             </ul>

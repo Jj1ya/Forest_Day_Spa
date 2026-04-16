@@ -35,7 +35,7 @@ export default function Testimonials() {
                   <div className="text-gold-400 text-xl tracking-widest mb-6">
                     {'★'.repeat(t.rating)}
                   </div>
-                  <blockquote className="font-serif text-xl md:text-2xl italic text-gray-800 leading-relaxed mb-6">
+                  <blockquote className="font-serif text-2xl md:text-3xl italic text-gray-800 leading-relaxed mb-6">
                     &ldquo;{t.text}&rdquo;
                   </blockquote>
                   <p className="text-sm font-semibold text-gray-500">
