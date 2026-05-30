@@ -137,11 +137,30 @@ function BookingModal({ onClose, contact }) {
                   <option>Abdomen &amp; Sides (70 min)</option>
                   <option>Dress Care Sculpting (70 min)</option>
                 </optgroup>
-                <optgroup label="Scalp">
-                  <option>Relaxing Head Spa (60 min)</option>
-                  <option>Scalp Detox (75 min)</option>
-                  <option>Hair-Loss Restoration (90 min)</option>
-                  <option>Damaged Hair Restoration (90 min)</option>
+                <optgroup label="Head Spa">
+                  <option>Morning Dew Ritual</option>
+                  <option>Deep Cedar Detox</option>
+                  <option>Willow Silk Therapy</option>
+                  <option>Root Renewal Therapy</option>
+                </optgroup>
+                <optgroup label="Facial Waxing">
+                  <option>Eye Brow ($25)</option>
+                  <option>Brow / Lip Combo ($40)</option>
+                  <option>Full Face ($65)</option>
+                  <option>Lip ($20)</option>
+                  <option>Chin ($20)</option>
+                  <option>Sideburns ($20)</option>
+                  <option>Cheeks ($20)</option>
+                </optgroup>
+                <optgroup label="Body Waxing">
+                  <option>Underarms ($40)</option>
+                  <option>Half Arms ($50)</option>
+                  <option>Full Arms ($50)</option>
+                  <option>Half Legs ($65)</option>
+                  <option>Full Legs ($95)</option>
+                  <option>Stomach ($30)</option>
+                  <option>Brazilian ($85)</option>
+                  <option>Bikini ($60)</option>
                 </optgroup>
               </select>
               <input type="date" required
