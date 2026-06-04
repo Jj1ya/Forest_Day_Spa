@@ -15,27 +15,34 @@ const SECTIONS = [
 ];
 
 export default function AdminPage() {
-  const { data, loading, setData, save, refetch } = useSite();
+  const { data, loading, setData, save } = useSite();
   const [active, setActive] = useState('dashboard');
   const [toast, setToast] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [canSave, setCanSave] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/health')
+      .then(r => r.json())
+      .then(h => setCanSave(!!h.canSave))
+      .catch(() => setCanSave(false));
+  }, []);
 
   if (loading || !data) {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center text-gray-400">Loading...</div>;
   }
 
-  function showToast(msg) {
+  function showToast(msg, isError = false) {
     setToast(msg);
-    setTimeout(() => setToast(''), 3000);
+    setTimeout(() => setToast(''), isError ? 8000 : 4000);
   }
 
   async function handleSave() {
     try {
       await save(data);
-      await refetch();
-      showToast('Saved! Homepage updated — refresh forestdayspa.com to see changes.');
+      showToast('Saved! Open homepage in a new tab and refresh to verify.');
     } catch (err) {
-      showToast(err?.message || 'Error saving. Try again.');
+      showToast(err?.message || 'Save failed. Connect Upstash Redis in Vercel, then Redeploy.', true);
     }
   }
 
@@ -50,6 +57,11 @@ export default function AdminPage() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
+      {!canSave && (
+        <div className="fixed top-0 left-0 right-0 z-[70] bg-red-600 text-white text-sm px-4 py-3 text-center">
+          저장이 안 됩니다 — Vercel 프로젝트 → Storage → Upstash Redis 연결 후 <strong>Redeploy</strong> 해주세요.
+        </div>
+      )}
       {/* Mobile toggle */}
       <button onClick={() => setSidebarOpen(!sidebarOpen)}
         className="md:hidden fixed top-4 left-4 z-[60] bg-[#1A3A28] text-white w-10 h-10 rounded-lg

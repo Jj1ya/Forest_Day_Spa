@@ -21,20 +21,15 @@ export function SiteProvider({ children }) {
       .finally(() => setLoading(false));
   }, []);
 
-  // When another tab saves in admin, refresh homepage data
+  // Homepage only: refresh when admin saved in another tab
   useEffect(() => {
     function onStorage(e) {
-      if (e.key === 'fds_site_updated') refetch().catch(console.error);
-    }
-    function onVisible() {
-      if (document.visibilityState === 'visible') refetch().catch(console.error);
+      if (e.key !== 'fds_site_updated') return;
+      if (window.location.pathname.startsWith('/admin')) return;
+      refetch().catch(console.error);
     }
     window.addEventListener('storage', onStorage);
-    document.addEventListener('visibilitychange', onVisible);
-    return () => {
-      window.removeEventListener('storage', onStorage);
-      document.removeEventListener('visibilitychange', onVisible);
-    };
+    return () => window.removeEventListener('storage', onStorage);
   }, []);
 
   async function save(newData) {
