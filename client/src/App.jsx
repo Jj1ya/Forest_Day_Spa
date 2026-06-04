@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { SiteProvider } from './context/SiteContext';
 import HomePage from './pages/HomePage';
 import AdminPage from './pages/AdminPage';
+import AdminGate from './components/AdminGate';
 
 export default function App() {
   return (
@@ -9,7 +10,11 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/admin/*" element={<AdminPage />} />
+          <Route path="/admin/*" element={
+            <AdminGate>
+              <AdminPage />
+            </AdminGate>
+          } />
         </Routes>
       </BrowserRouter>
     </SiteProvider>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useSite } from '../context/SiteContext';
-import { saveSiteData } from '../api';
 
 const SECTIONS = [
   { key: 'dashboard', label: 'Dashboard', icon: '▣' },
@@ -16,7 +15,7 @@ const SECTIONS = [
 ];
 
 export default function AdminPage() {
-  const { data, loading, setData } = useSite();
+  const { data, loading, setData, save, refetch } = useSite();
   const [active, setActive] = useState('dashboard');
   const [toast, setToast] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -32,10 +31,11 @@ export default function AdminPage() {
 
   async function handleSave() {
     try {
-      await saveSiteData(data);
-      showToast('Saved successfully!');
-    } catch {
-      showToast('Error saving. Try again.');
+      await save(data);
+      await refetch();
+      showToast('Saved! Homepage updated — refresh forestdayspa.com to see changes.');
+    } catch (err) {
+      showToast(err?.message || 'Error saving. Try again.');
     }
   }
 
@@ -97,7 +97,7 @@ export default function AdminPage() {
         </div>
 
         {/* Panels */}
-        {active === 'dashboard' && <DashboardPanel data={data} />}
+        {active === 'dashboard' && <DashboardPanel data={data} onOpenSite={() => window.open('/', '_blank')} />}
         {active === 'hero' && <HeroPanel data={data} updateField={updateField} />}
         {active === 'about' && <AboutPanel data={data} updateField={updateField} />}
         {active === 'services' && <ServicesPanel data={data} setData={setData} />}
@@ -161,7 +161,7 @@ function Textarea({ value, onChange, ...props }) {
 }
 
 /* ═══ PANELS ═══ */
-function DashboardPanel({ data }) {
+function DashboardPanel({ data, onOpenSite }) {
   const stats = [
     { label: 'Sections', value: '10' },
     { label: 'Services', value: data.services?.length || 0 },
@@ -179,14 +179,21 @@ function DashboardPanel({ data }) {
           </div>
         ))}
       </div>
-      <Card title="Quick Guide">
+      <Card title="How it works">
+        <p className="text-sm text-gray-600 mb-4">
+          This admin and your public homepage share the <strong>same database</strong>.
+          Edit here → <strong>Save All</strong> → visitors see updates on your domain.
+        </p>
         <ol className="text-sm text-gray-500 leading-8 list-decimal pl-5">
-          <li>Click on a section in the sidebar to edit its content</li>
-          <li>Fill in or change text, image URLs, etc.</li>
-          <li>Click <strong>Save All</strong> to save changes to the server</li>
-          <li>Open the <strong>View Live Site</strong> link in the sidebar to see changes</li>
-          <li>Changes are saved to the server and persist across sessions</li>
+          <li>Edit a section in the sidebar</li>
+          <li>Click <strong>Save All</strong> (stores to server)</li>
+          <li>Open your public site — same content as what guests see</li>
+          <li>Bookmark <strong>/admin</strong> only for yourself (password protected)</li>
         </ol>
+        <button type="button" onClick={onOpenSite}
+          className="mt-6 btn-gold">
+          Open public homepage →
+        </button>
       </Card>
     </>
   );

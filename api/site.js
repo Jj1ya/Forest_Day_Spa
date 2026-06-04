@@ -17,8 +17,13 @@ export default async function handler(req, res) {
           url: process.env.KV_REST_API_URL,
           token: process.env.KV_REST_API_TOKEN,
         });
-        const data = await redis.get('siteData');
-        if (data) return res.json(data);
+        let data = await redis.get('siteData');
+        if (data) {
+          if (typeof data === 'string') {
+            try { data = JSON.parse(data); } catch { /* use as-is */ }
+          }
+          return res.json(data);
+        }
       } catch {}
     }
     const raw = readFileSync(join(process.cwd(), 'server/data/site.json'), 'utf-8');
@@ -38,7 +43,7 @@ export default async function handler(req, res) {
         url: process.env.KV_REST_API_URL,
         token: process.env.KV_REST_API_TOKEN,
       });
-      await redis.set('siteData', JSON.stringify(req.body));
+      await redis.set('siteData', req.body);
       return res.json({ success: true });
     } catch (e) {
       return res.status(500).json({ error: e.message });
