@@ -7,6 +7,7 @@ const SECTIONS = [
   { key: 'about', label: 'About', icon: '✎' },
   { key: 'services', label: 'Services', icon: '✨' },
   { key: 'membership', label: 'Membership', icon: '★' },
+  { key: 'packages', label: 'Packages', icon: '📦' },
   { key: 'beforeafter', label: 'Before & After', icon: '⚒' },
   { key: 'testimonials', label: 'Testimonials', icon: '💬' },
   { key: 'gallery', label: 'Gallery', icon: '🖼' },
@@ -114,6 +115,7 @@ export default function AdminPage() {
         {active === 'about' && <AboutPanel data={data} updateField={updateField} />}
         {active === 'services' && <ServicesPanel data={data} setData={setData} />}
         {active === 'membership' && <MembershipPanel data={data} updateField={updateField} />}
+        {active === 'packages' && <PackagesPanel data={data} setData={setData} />}
         {active === 'beforeafter' && <BAPanel data={data} setData={setData} />}
         {active === 'testimonials' && <TestimonialsPanel data={data} setData={setData} />}
         {active === 'gallery' && <GalleryPanel data={data} setData={setData} />}
@@ -175,8 +177,9 @@ function Textarea({ value, onChange, ...props }) {
 /* ═══ PANELS ═══ */
 function DashboardPanel({ data, onOpenSite }) {
   const stats = [
-    { label: 'Sections', value: '10' },
+    { label: 'Sections', value: '11' },
     { label: 'Services', value: data.services?.length || 0 },
+    { label: 'Packages', value: data.packages?.items?.length || 0 },
     { label: 'Testimonials', value: data.testimonials?.length || 0 },
     { label: 'Gallery Photos', value: data.gallery?.length || 0 },
   ];
@@ -386,6 +389,133 @@ function MembershipPanel({ data, updateField }) {
           onChange={v => updateField('membership', 'perks', v.split('\n').filter(Boolean))} />
       </Field>
     </Card>
+  );
+}
+
+const PACKAGE_DEFAULTS = {
+  label: 'Packages',
+  title: 'Signature Package Deals',
+  description: '',
+  items: [],
+};
+
+function PackagesPanel({ data, setData }) {
+  const p = { ...PACKAGE_DEFAULTS, ...data.packages };
+  const [editing, setEditing] = useState(null);
+
+  function updateMeta(key, value) {
+    setData(prev => ({
+      ...prev,
+      packages: { ...PACKAGE_DEFAULTS, ...prev.packages, [key]: value },
+    }));
+  }
+
+  function updateItem(id, key, value) {
+    setData(prev => ({
+      ...prev,
+      packages: {
+        ...PACKAGE_DEFAULTS,
+        ...prev.packages,
+        items: (prev.packages?.items ?? []).map(item =>
+          item.id === id ? { ...item, [key]: value } : item
+        ),
+      },
+    }));
+  }
+
+  function addItem() {
+    const items = data.packages?.items ?? [];
+    const newId = Math.max(0, ...items.map(i => i.id)) + 1;
+    setData(prev => ({
+      ...prev,
+      packages: {
+        ...PACKAGE_DEFAULTS,
+        ...prev.packages,
+        items: [...items, {
+          id: newId, name: 'New Package', duration: '', description: '',
+          price: '$0', memberPrice: '$0',
+        }],
+      },
+    }));
+    setEditing(newId);
+  }
+
+  function deleteItem(id) {
+    if (!confirm('Delete this package?')) return;
+    setData(prev => ({
+      ...prev,
+      packages: {
+        ...PACKAGE_DEFAULTS,
+        ...prev.packages,
+        items: (prev.packages?.items ?? []).filter(i => i.id !== id),
+      },
+    }));
+  }
+
+  return (
+    <>
+      <Card title="Section Header">
+        <Field label="Section Label">
+          <Input value={p.label} onChange={v => updateMeta('label', v)} />
+        </Field>
+        <Field label="Title">
+          <Input value={p.title} onChange={v => updateMeta('title', v)} />
+        </Field>
+        <Field label="Description">
+          <Textarea value={p.description} onChange={v => updateMeta('description', v)} />
+        </Field>
+      </Card>
+
+      <Card title="Package Items" badge="Single column on site">
+        <p className="text-xs text-gray-400 mb-4">
+          Each package displays full-width in one column on the homepage.
+        </p>
+        <div className="space-y-3">
+          {(p.items ?? []).map(item => (
+            <div key={item.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-sm">{item.name || 'Untitled package'}</h4>
+                <div className="flex gap-2">
+                  <button onClick={() => setEditing(editing === item.id ? null : item.id)}
+                    className="text-xs border border-gray-200 px-3 py-1 rounded hover:bg-gray-100">
+                    {editing === item.id ? 'Close' : 'Edit'}
+                  </button>
+                  <button onClick={() => deleteItem(item.id)}
+                    className="text-xs border border-red-200 text-red-500 px-3 py-1 rounded hover:bg-red-50">
+                    Delete
+                  </button>
+                </div>
+              </div>
+              {editing === item.id && (
+                <div className="mt-3 space-y-3">
+                  <Field label="Name">
+                    <Input value={item.name} onChange={v => updateItem(item.id, 'name', v)} />
+                  </Field>
+                  <Field label="Duration (optional)">
+                    <Input value={item.duration} onChange={v => updateItem(item.id, 'duration', v)} placeholder="e.g. 120 min" />
+                  </Field>
+                  <Field label="Description">
+                    <Textarea value={item.description} onChange={v => updateItem(item.id, 'description', v)} />
+                  </Field>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="Non-member Price">
+                      <Input value={item.price} onChange={v => updateItem(item.id, 'price', v)} />
+                    </Field>
+                    <Field label="Member Price">
+                      <Input value={item.memberPrice} onChange={v => updateItem(item.id, 'memberPrice', v)} />
+                    </Field>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <button onClick={addItem}
+          className="mt-4 border border-gray-200 rounded-lg px-5 py-2 text-sm font-medium hover:bg-gray-50">
+          + Add Package
+        </button>
+      </Card>
+    </>
   );
 }
 

@@ -4,6 +4,7 @@ import Hero from '../components/Hero';
 import About from '../components/About';
 import Services from '../components/Services';
 import Membership from '../components/Membership';
+import Packages from '../components/Packages';
 import BeforeAfter from '../components/BeforeAfter';
 import Testimonials from '../components/Testimonials';
 import Gallery from '../components/Gallery';
@@ -33,6 +34,7 @@ export default function HomePage() {
       <About />
       <Services />
       <Membership />
+      <Packages />
       <BeforeAfter />
       <Testimonials />
       <Gallery />

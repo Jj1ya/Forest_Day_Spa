@@ -39,6 +39,7 @@ export default function Footer() {
             <a href="#services" className="block text-sm py-1 hover:text-gold-400 transition-colors">Body Care</a>
             <a href="#services" className="block text-sm py-1 hover:text-gold-400 transition-colors">Scalp Care</a>
             <a href="#membership" className="block text-sm py-1 hover:text-gold-400 transition-colors">Membership</a>
+            <a href="#packages" className="block text-sm py-1 hover:text-gold-400 transition-colors">Packages</a>
           </div>
 
           {/* Company */}

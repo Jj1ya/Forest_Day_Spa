@@ -39,6 +39,14 @@ function isValidSiteData(data) {
   );
 }
 
+function mergeMissingDefaults(data) {
+  const defaults = loadDefaultData();
+  if (!data.packages && defaults.packages) {
+    return { ...data, packages: defaults.packages };
+  }
+  return data;
+}
+
 async function getRedis() {
   const { Redis } = await import('@upstash/redis');
   const { url, token } = getRedisEnv();
@@ -56,7 +64,7 @@ async function readSiteData() {
         console.warn('Invalid siteData in Redis, restoring defaults');
         data = null;
       }
-      if (data) return data;
+      if (data) return mergeMissingDefaults(data);
 
       // First visit: copy bundled defaults into Redis so saves persist
       const defaults = loadDefaultData();

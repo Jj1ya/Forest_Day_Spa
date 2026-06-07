@@ -69,6 +69,12 @@
       "No long-term commitment — flexible and easy to maintain"
     ]
   },
+  "packages": {
+    "label": "Packages",
+    "title": "Signature Package Deals",
+    "description": "Curated treatment combinations designed for deeper results and better value.",
+    "items": []
+  },
   "beforeAfter": [
     { "id": 1, "beforeImg": "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=800&q=80", "afterImg": "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?w=800&q=80", "title": "Facial Contouring", "desc": "After 3 sessions · Gyeongrak lifting care" },
     { "id": 2, "beforeImg": "https://images.unsplash.com/photo-1560750588-73207b1ef5b8?w=800&q=80", "afterImg": "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=800&q=80", "title": "Scalp Detox", "desc": "After 4 sessions · Deep-cleansing detox" }
