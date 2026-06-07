@@ -297,7 +297,7 @@ function ServicesPanel({ data, setData }) {
     setData(prev => ({
       ...prev,
       services: [...prev.services, {
-        id: newId, category: 'facial', name: 'New Service', korean: '',
+        id: newId, category: filter !== 'all' ? filter : 'facial', name: 'New Service', korean: '',
         duration: '60 min', description: '', price: '$0', memberPrice: '$0',
       }],
     }));
@@ -305,14 +305,16 @@ function ServicesPanel({ data, setData }) {
   }
 
   return (
-    <Card title="Manage Services" badge="Facial / Body / Scalp">
+    <Card title="Manage Services" badge="Facial / Body / Head Spa / Waxing / Combo">
       <div className="mb-4">
         <select value={filter} onChange={e => setFilter(e.target.value)}
           className="border border-gray-200 rounded-lg px-4 py-2 text-sm">
           <option value="all">All</option>
           <option value="facial">Facial</option>
           <option value="body">Body</option>
-          <option value="scalp">Scalp</option>
+          <option value="scalp">Head Spa</option>
+          <option value="waxing">Waxing</option>
+          <option value="combo">Combo</option>
         </select>
       </div>
       <div className="space-y-3">
@@ -340,7 +342,9 @@ function ServicesPanel({ data, setData }) {
                       className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
                       <option value="facial">Facial</option>
                       <option value="body">Body</option>
-                      <option value="scalp">Scalp</option>
+                      <option value="scalp">Head Spa</option>
+                      <option value="waxing">Waxing</option>
+                      <option value="combo">Combo</option>
                     </select>
                   </Field>
                 </div>

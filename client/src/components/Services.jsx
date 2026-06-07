@@ -7,6 +7,7 @@ const TABS = [
   { key: 'body', label: 'Body' },
   { key: 'scalp', label: 'Head Spa' },
   { key: 'waxing', label: 'Waxing' },
+  { key: 'combo', label: 'Combo' },
 ];
 
 export default function Services() {
@@ -26,7 +27,7 @@ export default function Services() {
           <span className="eyebrow">Our Services</span>
           <h2 className="heading-lg mb-5">Treatments Tailored for You</h2>
           <p className="desc-text mx-auto">
-            From K-beauty facials to tension-melting body work, restorative head spa, and smooth waxing —
+            From K-beauty facials to tension-melting body work, restorative head spa, smooth waxing, and combo packages —
             every treatment is a journey to renewal.
           </p>
         </div>
@@ -48,6 +49,8 @@ export default function Services() {
         {/* Waxing — special price list layout */}
         {active === 'waxing' ? (
           <WaxingPanel services={filtered} />
+        ) : filtered.length === 0 ? (
+          <EmptyPanel label={TABS.find(t => t.key === active)?.label || 'Services'} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-200">
             {filtered.map((s, i) => (
@@ -57,6 +60,21 @@ export default function Services() {
         )}
       </div>
     </section>
+  );
+}
+
+function EmptyPanel({ label }) {
+  const [ref, vis] = useReveal();
+
+  return (
+    <div ref={ref}
+      className={`text-center py-16 border border-gray-200 bg-cream/40 transition-all duration-700
+        ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+      <p className="font-serif text-2xl text-forest-600 mb-3">{label}</p>
+      <p className="desc-text mx-auto max-w-md">
+        Packages are being updated. Please check back soon or call us to book.
+      </p>
+    </div>
   );
 }
 
