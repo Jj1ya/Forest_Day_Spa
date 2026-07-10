@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSite } from '../context/SiteContext';
+import MediaUploadField from '../components/MediaUploadField';
 
 const SECTIONS = [
   { key: 'dashboard', label: 'Dashboard', icon: '▣' },
@@ -21,12 +22,21 @@ export default function AdminPage() {
   const [toast, setToast] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [canSave, setCanSave] = useState(true);
+  const [canUpload, setCanUpload] = useState(true);
 
   useEffect(() => {
     fetch('/api/health')
       .then(r => r.json())
-      .then(h => setCanSave(!!h.canSave))
-      .catch(() => setCanSave(false));
+      .then(h => {
+        setCanSave(!!h.canSave);
+        if (!['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+          setCanUpload(!!h.uploadConfigured);
+        }
+      })
+      .catch(() => {
+        setCanSave(false);
+        setCanUpload(false);
+      });
   }, []);
 
   if (loading || !data) {
@@ -61,6 +71,11 @@ export default function AdminPage() {
       {!canSave && (
         <div className="fixed top-0 left-0 right-0 z-[70] bg-red-600 text-white text-sm px-4 py-3 text-center">
           저장이 안 됩니다 — Vercel 프로젝트 → Storage → Upstash Redis 연결 후 <strong>Redeploy</strong> 해주세요.
+        </div>
+      )}
+      {!canUpload && (
+        <div className={`fixed left-0 right-0 z-[69] bg-amber-600 text-white text-sm px-4 py-3 text-center ${!canSave ? 'top-12' : 'top-0'}`}>
+          파일 업로드가 안 됩니다 — Vercel → Storage → <strong>Blob</strong> 연결 후 Redeploy 해주세요. (URL 직접 입력은 가능)
         </div>
       )}
       {/* Mobile toggle */}
@@ -201,6 +216,7 @@ function DashboardPanel({ data, onOpenSite }) {
         </p>
         <ol className="text-sm text-gray-500 leading-8 list-decimal pl-5">
           <li>Edit a section in the sidebar</li>
+          <li>For photos/videos: click <strong>Upload file</strong> (no URL needed)</li>
           <li>Click <strong>Save All</strong> (stores to server)</li>
           <li>Open your public site — same content as what guests see</li>
           <li>Bookmark <strong>/admin</strong> only for yourself (password protected)</li>
@@ -219,12 +235,22 @@ function HeroPanel({ data, updateField }) {
   return (
     <>
       <Card title="Video / Background">
-        <Field label="Video URL (MP4)" hint="Leave empty to use poster image. Upload to YouTube or use stock video URL.">
-          <Input value={h.videoUrl} onChange={v => updateField('hero', 'videoUrl', v)} placeholder="https://..." />
-        </Field>
-        <Field label="Fallback Poster Image URL">
-          <Input value={h.posterUrl} onChange={v => updateField('hero', 'posterUrl', v)} />
-        </Field>
+        <MediaUploadField
+          label="Video (MP4)"
+          hint="Upload a short MP4, or leave empty to use the poster image only."
+          value={h.videoUrl}
+          onChange={v => updateField('hero', 'videoUrl', v)}
+          accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm"
+          kind="video"
+        />
+        <MediaUploadField
+          label="Poster Image"
+          hint="Shown when no video is set, or while the video loads."
+          value={h.posterUrl}
+          onChange={v => updateField('hero', 'posterUrl', v)}
+          accept="image/*"
+          kind="image"
+        />
       </Card>
       <Card title="Text Content">
         <Field label="Eyebrow Text">
@@ -271,9 +297,13 @@ function AboutPanel({ data, updateField }) {
           updateField('about', 'paragraphs', p);
         }} />
       </Field>
-      <Field label="Image URL">
-        <Input value={a.imageUrl} onChange={v => updateField('about', 'imageUrl', v)} />
-      </Field>
+      <MediaUploadField
+        label="Image"
+        value={a.imageUrl}
+        onChange={v => updateField('about', 'imageUrl', v)}
+        accept="image/*"
+        kind="image"
+      />
     </Card>
   );
 }
@@ -544,9 +574,21 @@ function BAPanel({ data, setData }) {
       <div className="space-y-4">
         {data.beforeAfter.map(b => (
           <div key={b.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Before Image URL"><Input value={b.beforeImg} onChange={v => updateBA(b.id, 'beforeImg', v)} placeholder="https://..." /></Field>
-              <Field label="After Image URL"><Input value={b.afterImg} onChange={v => updateBA(b.id, 'afterImg', v)} placeholder="https://..." /></Field>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <MediaUploadField
+                label="Before Image"
+                value={b.beforeImg}
+                onChange={v => updateBA(b.id, 'beforeImg', v)}
+                accept="image/*"
+                kind="image"
+              />
+              <MediaUploadField
+                label="After Image"
+                value={b.afterImg}
+                onChange={v => updateBA(b.id, 'afterImg', v)}
+                accept="image/*"
+                kind="image"
+              />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Title"><Input value={b.title} onChange={v => updateBA(b.id, 'title', v)} /></Field>
@@ -619,11 +661,20 @@ function GalleryPanel({ data, setData }) {
 
   return (
     <Card title="Gallery Images">
-      <div className="space-y-3">
+      <p className="text-xs text-gray-400 mb-4">Upload photos from your phone or computer — no URL needed.</p>
+      <div className="space-y-6">
         {data.gallery.map((url, i) => (
-          <div key={i} className="flex gap-3 items-center">
-            <Input value={url} onChange={v => updateImg(i, v)} placeholder="Image URL" />
-            <button onClick={() => deleteImg(i)} className="text-red-400 hover:text-red-600 shrink-0 text-lg">×</button>
+          <div key={i} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <MediaUploadField
+              label={`Image ${i + 1}`}
+              value={url}
+              onChange={v => updateImg(i, v)}
+              accept="image/*"
+              kind="image"
+            />
+            <button onClick={() => deleteImg(i)} className="text-xs text-red-500 border border-red-200 px-3 py-1 rounded hover:bg-red-50">
+              Delete image
+            </button>
           </div>
         ))}
       </div>

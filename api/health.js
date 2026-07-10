@@ -11,5 +11,6 @@ export default async function handler(_req, res) {
   res.json({
     redisConfigured: !!(url && token),
     canSave: !!(url && token),
+    uploadConfigured: !!process.env.BLOB_READ_WRITE_TOKEN,
   });
 }
