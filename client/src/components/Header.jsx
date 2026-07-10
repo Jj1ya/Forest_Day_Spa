@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BOOKING_URL, GIFT_CARD_URL } from '../constants/links';
 
 const NAV_LINKS = [
   { href: '#about', label: 'About' },
@@ -51,10 +52,16 @@ export default function Header() {
             ))}
           </nav>
 
-          <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer"
-            className="hidden md:inline-flex btn-outline-forest">
-            Book Now
-          </a>
+          <div className="hidden md:flex items-center gap-3">
+            <a href={GIFT_CARD_URL} target="_blank" rel="noreferrer"
+              className="btn-outline-forest">
+              Gift Card
+            </a>
+            <a href={BOOKING_URL} target="_blank" rel="noreferrer"
+              className="btn-outline-forest">
+              Book Now
+            </a>
+          </div>
 
           <button onClick={() => setMenuOpen(true)} className="md:hidden flex flex-col gap-1.5 p-1"
             aria-label="Open menu">
@@ -78,7 +85,11 @@ export default function Header() {
             {l.label}
           </button>
         ))}
-        <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer"
+        <a href={GIFT_CARD_URL} target="_blank" rel="noreferrer"
+          className="font-serif text-3xl text-gold-400">
+          Gift Card
+        </a>
+        <a href={BOOKING_URL} target="_blank" rel="noreferrer"
           className="font-serif text-3xl text-gold-400">
           Book Now
         </a>

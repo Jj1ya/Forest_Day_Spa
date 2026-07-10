@@ -1,4 +1,5 @@
 import { useSite } from '../context/SiteContext';
+import { GIFT_CARD_URL } from '../constants/links';
 
 export default function Footer() {
   const { data } = useSite();
@@ -40,6 +41,8 @@ export default function Footer() {
             <a href="#services" className="block text-sm py-1 hover:text-gold-400 transition-colors">Scalp Care</a>
             <a href="#membership" className="block text-sm py-1 hover:text-gold-400 transition-colors">Membership</a>
             <a href="#packages" className="block text-sm py-1 hover:text-gold-400 transition-colors">Packages</a>
+            <a href={GIFT_CARD_URL} target="_blank" rel="noreferrer"
+              className="block text-sm py-1 hover:text-gold-400 transition-colors">Gift Cards</a>
           </div>
 
           {/* Company */}

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSite } from '../context/SiteContext';
 import useReveal from '../hooks/useReveal';
+import { BOOKING_URL, GIFT_CARD_URL } from '../constants/links';
 
 export default function Contact() {
   const { data } = useSite();
@@ -32,9 +33,14 @@ export default function Contact() {
                 <ContactItem icon="🕐" title="Hours" content={c.hours} />
               </div>
 
-              <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer" className="btn-gold mt-10">
-                Book an Appointment
-              </a>
+              <div className="flex flex-wrap gap-4 mt-10">
+                <a href={BOOKING_URL} target="_blank" rel="noreferrer" className="btn-gold">
+                  Book an Appointment
+                </a>
+                <a href={GIFT_CARD_URL} target="_blank" rel="noreferrer" className="btn-outline-forest">
+                  Buy Gift Card
+                </a>
+              </div>
             </div>
 
             <div ref={ref2}

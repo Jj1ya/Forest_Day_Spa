@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { BOOKING_URL, GIFT_CARD_URL } from '../constants/links';
 
 export default function FloatingCTA() {
   const [show, setShow] = useState(false);
@@ -19,10 +20,16 @@ export default function FloatingCTA() {
       <div className={`fixed bottom-0 left-0 right-0 z-40 md:hidden bg-forest-700/95 backdrop-blur-lg
         border-t border-white/10 px-4 py-3 transition-transform duration-300
         ${show ? 'translate-y-0' : 'translate-y-full'}`}>
-        <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer"
-          className="btn-gold w-full justify-center text-center">
-          Book Appointment
-        </a>
+        <div className="flex gap-2">
+          <a href={GIFT_CARD_URL} target="_blank" rel="noreferrer"
+            className="btn-outline-white flex-1 justify-center text-center text-xs py-3">
+            Gift Card
+          </a>
+          <a href={BOOKING_URL} target="_blank" rel="noreferrer"
+            className="btn-gold flex-1 justify-center text-center text-xs py-3">
+            Book Now
+          </a>
+        </div>
       </div>
 
       {/* Back to top */}

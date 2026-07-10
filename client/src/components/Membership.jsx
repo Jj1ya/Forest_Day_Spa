@@ -1,5 +1,6 @@
 import { useSite } from '../context/SiteContext';
 import useReveal from '../hooks/useReveal';
+import { BOOKING_URL, GIFT_CARD_URL } from '../constants/links';
 
 export default function Membership() {
   const { data } = useSite();
@@ -26,7 +27,10 @@ export default function Membership() {
               {m.price} <span className="text-xl font-normal text-white/50">/ mo</span>
             </div>
             <p className="text-sm text-white/50 mt-3">{m.subtitle}</p>
-            <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer" className="btn-gold mt-8 inline-block">Join Now</a>
+            <div className="flex flex-wrap gap-4 mt-8">
+              <a href={BOOKING_URL} target="_blank" rel="noreferrer" className="btn-gold inline-block">Join Now</a>
+              <a href={GIFT_CARD_URL} target="_blank" rel="noreferrer" className="btn-outline-white inline-block">Buy Gift Card</a>
+            </div>
           </div>
 
           {/* Details */}

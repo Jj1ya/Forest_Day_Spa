@@ -1,4 +1,5 @@
 import { useSite } from '../context/SiteContext';
+import { BOOKING_URL, GIFT_CARD_URL } from '../constants/links';
 
 export default function Hero() {
   const { data } = useSite();
@@ -35,7 +36,8 @@ export default function Hero() {
           {h.description}
         </p>
         <div className="flex gap-4 justify-center flex-wrap">
-          <a href="https://booking.mangomint.com/forestdayspa" target="_blank" rel="noreferrer" className="btn-gold">{h.primaryBtn}</a>
+          <a href={BOOKING_URL} target="_blank" rel="noreferrer" className="btn-gold">{h.primaryBtn}</a>
+          <a href={GIFT_CARD_URL} target="_blank" rel="noreferrer" className="btn-outline-white">Buy Gift Card</a>
           <a href="#services" className="btn-outline-white">{h.secondaryBtn}</a>
         </div>
       </div>
