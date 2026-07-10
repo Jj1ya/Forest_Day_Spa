@@ -1,3 +1,5 @@
+import { isBlobConfigured } from './_blob.js';
+
 export default async function handler(_req, res) {
   const url =
     process.env.KV_REST_API_URL ||
@@ -11,6 +13,6 @@ export default async function handler(_req, res) {
   res.json({
     redisConfigured: !!(url && token),
     canSave: !!(url && token),
-    uploadConfigured: !!process.env.BLOB_READ_WRITE_TOKEN,
+    uploadConfigured: isBlobConfigured(),
   });
 }
