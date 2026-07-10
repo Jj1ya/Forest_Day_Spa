@@ -1,30 +1,40 @@
 import { useState, useEffect } from 'react';
+import { loginAdmin, verifyAdminSession } from '../api';
 
-const STORAGE_KEY = 'fds_admin_auth';
-const PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || '';
+const STORAGE_KEY = 'fds_admin_token';
 
 export default function AdminGate({ children }) {
   const [ok, setOk] = useState(false);
-  const [input, setInput] = useState('');
+  const [checking, setChecking] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!PASSWORD) {
-      setOk(true);
-      return;
-    }
-    if (sessionStorage.getItem(STORAGE_KEY) === '1') setOk(true);
+    verifyAdminSession()
+      .then(valid => setOk(valid))
+      .catch(() => setOk(false))
+      .finally(() => setChecking(false));
   }, []);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (input === PASSWORD) {
-      sessionStorage.setItem(STORAGE_KEY, '1');
+    setError('');
+    try {
+      const { token } = await loginAdmin(email.trim(), password);
+      sessionStorage.setItem(STORAGE_KEY, token);
       setOk(true);
-      setError('');
-    } else {
-      setError('Incorrect password.');
+    } catch (err) {
+      setError(err?.message || 'Sign in failed.');
     }
+  }
+
+  if (checking) {
+    return (
+      <div className="min-h-screen bg-forest-700 flex items-center justify-center text-white/60 text-sm">
+        Loading...
+      </div>
+    );
   }
 
   if (ok) return children;
@@ -34,13 +44,24 @@ export default function AdminGate({ children }) {
       <form onSubmit={handleSubmit}
         className="bg-white w-full max-w-sm p-8 shadow-xl">
         <h1 className="font-serif text-2xl text-forest-700 mb-1">Forest Day Spa</h1>
-        <p className="text-sm text-gray-500 mb-6">Admin — enter password to continue</p>
+        <p className="text-sm text-gray-500 mb-6">Admin — sign in to continue</p>
+        <input
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="Email"
+          autoComplete="username"
+          autoFocus
+          required
+          className="w-full border border-gray-200 px-4 py-3 text-sm mb-3 focus:outline-none focus:border-forest-500"
+        />
         <input
           type="password"
-          value={input}
-          onChange={e => setInput(e.target.value)}
+          value={password}
+          onChange={e => setPassword(e.target.value)}
           placeholder="Password"
-          autoFocus
+          autoComplete="current-password"
+          required
           className="w-full border border-gray-200 px-4 py-3 text-sm mb-4 focus:outline-none focus:border-forest-500"
         />
         {error && <p className="text-sm text-red-500 mb-3">{error}</p>}
@@ -53,4 +74,8 @@ export default function AdminGate({ children }) {
       </form>
     </div>
   );
+}
+
+export function getAdminToken() {
+  return sessionStorage.getItem(STORAGE_KEY);
 }

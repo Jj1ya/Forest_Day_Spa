@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { verifyAdminRequest, isAdminConfigured } from './_auth.js';
 
 function getRedisEnv() {
   const url =
@@ -117,7 +118,7 @@ async function writeSiteData(body) {
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   if (req.method === 'GET') {
@@ -126,6 +127,9 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'PUT') {
+    if (isAdminConfigured() && !verifyAdminRequest(req)) {
+      return res.status(401).json({ error: 'Unauthorized. Sign in to admin first.' });
+    }
     const result = await writeSiteData(req.body);
     return res.status(result.status).json(result.body);
   }

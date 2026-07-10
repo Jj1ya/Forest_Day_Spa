@@ -1,4 +1,14 @@
+import { getAdminToken } from './components/AdminGate';
+
 const BASE = '/api';
+
+function authHeaders(extra = {}) {
+  const token = getAdminToken();
+  return {
+    ...extra,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+}
 
 export async function fetchSiteData() {
   const res = await fetch(`${BASE}/site`);
@@ -6,10 +16,30 @@ export async function fetchSiteData() {
   return res.json();
 }
 
+export async function loginAdmin(email, password) {
+  const res = await fetch(`${BASE}/admin-auth`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.error || 'Sign in failed');
+  return body;
+}
+
+export async function verifyAdminSession() {
+  const token = getAdminToken();
+  if (!token) return false;
+  const res = await fetch(`${BASE}/admin-auth`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.ok;
+}
+
 export async function saveSiteData(data) {
   const res = await fetch(`${BASE}/site`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
     body: JSON.stringify(data),
   });
   if (!res.ok) {
@@ -22,7 +52,7 @@ export async function saveSiteData(data) {
 export async function saveSection(section, data) {
   const res = await fetch(`${BASE}/site/${section}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders({ 'Content-Type': 'application/json' }),
     body: JSON.stringify(data),
   });
   if (!res.ok) throw new Error('Failed to save');
