@@ -42,10 +42,11 @@ function isValidSiteData(data) {
 
 function mergeMissingDefaults(data) {
   const defaults = loadDefaultData();
-  if (!data.packages && defaults.packages) {
-    return { ...data, packages: defaults.packages };
+  const merged = { ...data };
+  for (const key of ['packages', 'servicesSection', 'serviceCategories', 'navigation']) {
+    if (!merged[key] && defaults[key]) merged[key] = defaults[key];
   }
-  return data;
+  return merged;
 }
 
 async function getRedis() {

@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useSite } from '../context/SiteContext';
 import MediaUploadField from '../components/MediaUploadField';
+import {
+  DEFAULT_NAVIGATION,
+  DEFAULT_SERVICE_CATEGORIES,
+  DEFAULT_SERVICES_SECTION,
+  getServiceCategories,
+} from '../constants/siteDefaults';
 
 const SECTIONS = [
   { key: 'dashboard', label: 'Dashboard', icon: '▣' },
+  { key: 'navigation', label: 'Navigation', icon: '☰' },
   { key: 'hero', label: 'Hero (Video)', icon: '▶' },
   { key: 'about', label: 'About', icon: '✎' },
-  { key: 'services', label: 'Services', icon: '✨' },
+  { key: 'services', label: 'Services & Menu', icon: '✨' },
   { key: 'membership', label: 'Membership', icon: '★' },
   { key: 'packages', label: 'Packages', icon: '📦' },
   { key: 'beforeafter', label: 'Before & After', icon: '⚒' },
@@ -126,6 +133,7 @@ export default function AdminPage() {
 
         {/* Panels */}
         {active === 'dashboard' && <DashboardPanel data={data} onOpenSite={() => window.open('/', '_blank')} />}
+        {active === 'navigation' && <NavigationPanel data={data} setData={setData} />}
         {active === 'hero' && <HeroPanel data={data} updateField={updateField} />}
         {active === 'about' && <AboutPanel data={data} updateField={updateField} />}
         {active === 'services' && <ServicesPanel data={data} setData={setData} />}
@@ -192,8 +200,9 @@ function Textarea({ value, onChange, ...props }) {
 /* ═══ PANELS ═══ */
 function DashboardPanel({ data, onOpenSite }) {
   const stats = [
-    { label: 'Sections', value: '11' },
-    { label: 'Services', value: data.services?.length || 0 },
+    { label: 'Sections', value: '12' },
+    { label: 'Menu Items', value: data.services?.length || 0 },
+    { label: 'Categories', value: getServiceCategories(data).length },
     { label: 'Packages', value: data.packages?.items?.length || 0 },
     { label: 'Testimonials', value: data.testimonials?.length || 0 },
     { label: 'Gallery Photos', value: data.gallery?.length || 0 },
@@ -217,6 +226,9 @@ function DashboardPanel({ data, onOpenSite }) {
         <ol className="text-sm text-gray-500 leading-8 list-decimal pl-5">
           <li>Edit a section in the sidebar</li>
           <li>For photos/videos: click <strong>Upload file</strong> (no URL needed)</li>
+          <li>Add menu tabs in <strong>Services & Menu → Categories</strong></li>
+          <li>Add treatments with <strong>+ Add Menu Item</strong></li>
+          <li>Edit top menu links in <strong>Navigation</strong></li>
           <li>Click <strong>Save All</strong> (stores to server)</li>
           <li>Open your public site — same content as what guests see</li>
           <li>Bookmark <strong>/admin</strong> only for yourself (password protected)</li>
@@ -308,10 +320,156 @@ function AboutPanel({ data, updateField }) {
   );
 }
 
+function NavigationPanel({ data, setData }) {
+  const nav = data.navigation?.length ? data.navigation : DEFAULT_NAVIGATION;
+
+  function updateLink(i, key, value) {
+    setData(prev => ({
+      ...prev,
+      navigation: (prev.navigation || DEFAULT_NAVIGATION).map((l, idx) =>
+        idx === i ? { ...l, [key]: value } : l
+      ),
+    }));
+  }
+
+  function moveLink(i, dir) {
+    const j = i + dir;
+    if (j < 0 || j >= nav.length) return;
+    setData(prev => {
+      const list = [...(prev.navigation || DEFAULT_NAVIGATION)];
+      [list[i], list[j]] = [list[j], list[i]];
+      return { ...prev, navigation: list };
+    });
+  }
+
+  function addLink() {
+    setData(prev => ({
+      ...prev,
+      navigation: [...(prev.navigation || DEFAULT_NAVIGATION), { href: '#', label: 'New Link' }],
+    }));
+  }
+
+  function removeLink(i) {
+    if (!confirm('Remove this nav link?')) return;
+    setData(prev => ({
+      ...prev,
+      navigation: (prev.navigation || DEFAULT_NAVIGATION).filter((_, idx) => idx !== i),
+    }));
+  }
+
+  function resetNav() {
+    if (!confirm('Reset navigation to defaults?')) return;
+    setData(prev => ({ ...prev, navigation: [...DEFAULT_NAVIGATION] }));
+  }
+
+  return (
+    <Card title="Top Navigation" badge={`${nav.length} links`}>
+      <p className="text-sm text-gray-500 mb-4">
+        Edit the header menu. Use <code className="text-xs bg-gray-100 px-1 rounded">#section</code> for on-page links
+        or full URLs for external pages.
+      </p>
+      <div className="space-y-3">
+        {nav.map((link, i) => (
+          <div key={`${link.href}-${i}`} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Field label="Label">
+                <Input value={link.label} onChange={v => updateLink(i, 'label', v)} />
+              </Field>
+              <Field label="Link (href)">
+                <Input value={link.href} onChange={v => updateLink(i, 'href', v)} />
+              </Field>
+            </div>
+            <div className="flex gap-2 mt-3">
+              <button onClick={() => moveLink(i, -1)} disabled={i === 0}
+                className="text-xs border border-gray-200 px-3 py-1 rounded hover:bg-gray-100 disabled:opacity-40">
+                ↑ Up
+              </button>
+              <button onClick={() => moveLink(i, 1)} disabled={i === nav.length - 1}
+                className="text-xs border border-gray-200 px-3 py-1 rounded hover:bg-gray-100 disabled:opacity-40">
+                ↓ Down
+              </button>
+              <button onClick={() => removeLink(i)}
+                className="text-xs border border-red-200 text-red-500 px-3 py-1 rounded hover:bg-red-50 ml-auto">
+                Remove
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-3 mt-4">
+        <button onClick={addLink}
+          className="border border-gray-200 rounded-lg px-5 py-2 text-sm font-medium hover:bg-gray-50">
+          + Add Link
+        </button>
+        <button onClick={resetNav}
+          className="border border-gray-200 rounded-lg px-5 py-2 text-sm text-gray-500 hover:bg-gray-50">
+          Reset to Defaults
+        </button>
+      </div>
+    </Card>
+  );
+}
+
 function ServicesPanel({ data, setData }) {
+  const categories = getServiceCategories(data);
+  const section = { ...DEFAULT_SERVICES_SECTION, ...data.servicesSection };
   const [filter, setFilter] = useState('all');
-  const filtered = filter === 'all' ? data.services : data.services.filter(s => s.category === filter);
+  const filtered = filter === 'all'
+    ? data.services
+    : data.services.filter(s => s.category === filter);
   const [editing, setEditing] = useState(null);
+
+  function updateSection(key, value) {
+    setData(prev => ({
+      ...prev,
+      servicesSection: { ...DEFAULT_SERVICES_SECTION, ...prev.servicesSection, [key]: value },
+    }));
+  }
+
+  function updateCategory(i, key, value) {
+    setData(prev => ({
+      ...prev,
+      serviceCategories: (prev.serviceCategories || DEFAULT_SERVICE_CATEGORIES).map((c, idx) =>
+        idx === i ? { ...c, [key]: value } : c
+      ),
+    }));
+  }
+
+  function moveCategory(i, dir) {
+    const list = data.serviceCategories || DEFAULT_SERVICE_CATEGORIES;
+    const j = i + dir;
+    if (j < 0 || j >= list.length) return;
+    setData(prev => {
+      const cats = [...(prev.serviceCategories || DEFAULT_SERVICE_CATEGORIES)];
+      [cats[i], cats[j]] = [cats[j], cats[i]];
+      return { ...prev, serviceCategories: cats };
+    });
+  }
+
+  function addCategory() {
+    const key = `category-${Date.now()}`;
+    setData(prev => ({
+      ...prev,
+      serviceCategories: [
+        ...(prev.serviceCategories || DEFAULT_SERVICE_CATEGORIES),
+        { key, label: 'New Category', layout: 'cards' },
+      ],
+    }));
+  }
+
+  function removeCategory(i) {
+    const cat = (data.serviceCategories || DEFAULT_SERVICE_CATEGORIES)[i];
+    const inUse = data.services.some(s => s.category === cat.key);
+    if (inUse) {
+      alert(`Cannot remove "${cat.label}" — ${data.services.filter(s => s.category === cat.key).length} menu item(s) still use it.`);
+      return;
+    }
+    if (!confirm(`Remove category "${cat.label}"?`)) return;
+    setData(prev => ({
+      ...prev,
+      serviceCategories: (prev.serviceCategories || DEFAULT_SERVICE_CATEGORIES).filter((_, idx) => idx !== i),
+    }));
+  }
 
   function updateService(id, key, value) {
     setData(prev => ({
@@ -321,85 +479,160 @@ function ServicesPanel({ data, setData }) {
   }
 
   function deleteService(id) {
-    if (!confirm('Delete this service?')) return;
+    if (!confirm('Delete this menu item?')) return;
     setData(prev => ({ ...prev, services: prev.services.filter(s => s.id !== id) }));
   }
 
   function addService() {
     const newId = Math.max(0, ...data.services.map(s => s.id)) + 1;
+    const defaultCat = filter !== 'all' ? filter : categories[0]?.key || 'facial';
     setData(prev => ({
       ...prev,
       services: [...prev.services, {
-        id: newId, category: filter !== 'all' ? filter : 'facial', name: 'New Service', korean: '',
+        id: newId, category: defaultCat, name: 'New Service', korean: '',
         duration: '60 min', description: '', price: '$0', memberPrice: '$0',
       }],
     }));
     setEditing(newId);
   }
 
+  function duplicateService(id) {
+    const src = data.services.find(s => s.id === id);
+    if (!src) return;
+    const newId = Math.max(0, ...data.services.map(s => s.id)) + 1;
+    setData(prev => ({
+      ...prev,
+      services: [...prev.services, { ...src, id: newId, name: `${src.name} (Copy)` }],
+    }));
+    setEditing(newId);
+  }
+
+  const catList = data.serviceCategories || DEFAULT_SERVICE_CATEGORIES;
+
   return (
-    <Card title="Manage Services" badge="Facial / Body / Head Spa / Waxing / Combo">
-      <div className="mb-4">
-        <select value={filter} onChange={e => setFilter(e.target.value)}
-          className="border border-gray-200 rounded-lg px-4 py-2 text-sm">
-          <option value="all">All</option>
-          <option value="facial">Facial</option>
-          <option value="body">Body</option>
-          <option value="scalp">Head Spa</option>
-          <option value="waxing">Waxing</option>
-          <option value="combo">Combo</option>
-        </select>
-      </div>
-      <div className="space-y-3">
-        {filtered.map(s => (
-          <div key={s.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="font-semibold text-sm">{s.name} <span className="text-gray-400 font-normal">({s.category})</span></h4>
-              <div className="flex gap-2">
-                <button onClick={() => setEditing(editing === s.id ? null : s.id)}
-                  className="text-xs border border-gray-200 px-3 py-1 rounded hover:bg-gray-100">
-                  {editing === s.id ? 'Close' : 'Edit'}
-                </button>
-                <button onClick={() => deleteService(s.id)}
-                  className="text-xs border border-red-200 text-red-500 px-3 py-1 rounded hover:bg-red-50">
-                  Delete
-                </button>
+    <>
+      <Card title="Services Section Header">
+        <Field label="Eyebrow">
+          <Input value={section.label} onChange={v => updateSection('label', v)} />
+        </Field>
+        <Field label="Title">
+          <Input value={section.title} onChange={v => updateSection('title', v)} />
+        </Field>
+        <Field label="Description">
+          <Textarea value={section.description} onChange={v => updateSection('description', v)} />
+        </Field>
+      </Card>
+
+      <Card title="Service Categories (Tabs)" badge={`${catList.length} tabs`}>
+        <p className="text-sm text-gray-500 mb-4">
+          Each category becomes a tab on the Services section. Use <strong>waxing</strong> layout for Facial/Body waxing sub-groups.
+        </p>
+        <div className="space-y-3">
+          {catList.map((cat, i) => (
+            <div key={cat.key} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <Field label="Tab Label">
+                  <Input value={cat.label} onChange={v => updateCategory(i, 'label', v)} />
+                </Field>
+                <Field label="Key (internal)">
+                  <Input value={cat.key} onChange={v => updateCategory(i, 'key', v)} />
+                </Field>
+                <Field label="Layout">
+                  <select value={cat.layout || 'cards'} onChange={e => updateCategory(i, 'layout', e.target.value)}
+                    className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+                    <option value="cards">Cards (Facial, Body, etc.)</option>
+                    <option value="waxing">Waxing (Facial/Body groups)</option>
+                  </select>
+                </Field>
+              </div>
+              <div className="flex gap-2 mt-3">
+                <button onClick={() => moveCategory(i, -1)} disabled={i === 0}
+                  className="text-xs border border-gray-200 px-3 py-1 rounded hover:bg-gray-100 disabled:opacity-40">↑</button>
+                <button onClick={() => moveCategory(i, 1)} disabled={i === catList.length - 1}
+                  className="text-xs border border-gray-200 px-3 py-1 rounded hover:bg-gray-100 disabled:opacity-40">↓</button>
+                <button onClick={() => removeCategory(i)}
+                  className="text-xs border border-red-200 text-red-500 px-3 py-1 rounded hover:bg-red-50 ml-auto">Remove</button>
               </div>
             </div>
-            {editing === s.id && (
-              <div className="mt-3 space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <Field label="Name"><Input value={s.name} onChange={v => updateService(s.id, 'name', v)} /></Field>
-                  <Field label="Category">
-                    <select value={s.category} onChange={e => updateService(s.id, 'category', e.target.value)}
-                      className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
-                      <option value="facial">Facial</option>
-                      <option value="body">Body</option>
-                      <option value="scalp">Head Spa</option>
-                      <option value="waxing">Waxing</option>
-                      <option value="combo">Combo</option>
-                    </select>
-                  </Field>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <Field label="Korean Name"><Input value={s.korean} onChange={v => updateService(s.id, 'korean', v)} /></Field>
-                  <Field label="Duration"><Input value={s.duration} onChange={v => updateService(s.id, 'duration', v)} /></Field>
-                </div>
-                <Field label="Description"><Textarea value={s.description} onChange={v => updateService(s.id, 'description', v)} /></Field>
-                <div className="grid grid-cols-2 gap-3">
-                  <Field label="Non-member Price"><Input value={s.price} onChange={v => updateService(s.id, 'price', v)} /></Field>
-                  <Field label="Member Price"><Input value={s.memberPrice} onChange={v => updateService(s.id, 'memberPrice', v)} /></Field>
+          ))}
+        </div>
+        <button onClick={addCategory}
+          className="mt-4 border border-gray-200 rounded-lg px-5 py-2 text-sm font-medium hover:bg-gray-50">
+          + Add Category Tab
+        </button>
+      </Card>
+
+      <Card title="Menu Items" badge={`${data.services.length} items`}>
+        <div className="mb-4">
+          <select value={filter} onChange={e => setFilter(e.target.value)}
+            className="border border-gray-200 rounded-lg px-4 py-2 text-sm">
+            <option value="all">All Categories</option>
+            {categories.map(c => (
+              <option key={c.key} value={c.key}>{c.label}</option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-3">
+          {filtered.map(s => (
+            <div key={s.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-semibold text-sm">
+                  {s.name}{' '}
+                  <span className="text-gray-400 font-normal">
+                    ({categories.find(c => c.key === s.category)?.label || s.category})
+                  </span>
+                </h4>
+                <div className="flex gap-2">
+                  <button onClick={() => setEditing(editing === s.id ? null : s.id)}
+                    className="text-xs border border-gray-200 px-3 py-1 rounded hover:bg-gray-100">
+                    {editing === s.id ? 'Close' : 'Edit'}
+                  </button>
+                  <button onClick={() => duplicateService(s.id)}
+                    className="text-xs border border-gray-200 px-3 py-1 rounded hover:bg-gray-100">
+                    Duplicate
+                  </button>
+                  <button onClick={() => deleteService(s.id)}
+                    className="text-xs border border-red-200 text-red-500 px-3 py-1 rounded hover:bg-red-50">
+                    Delete
+                  </button>
                 </div>
               </div>
-            )}
-          </div>
-        ))}
-      </div>
-      <button onClick={addService}
-        className="mt-4 border border-gray-200 rounded-lg px-5 py-2 text-sm font-medium hover:bg-gray-50">
-        + Add New Service
-      </button>
-    </Card>
+              {editing === s.id && (
+                <div className="mt-3 space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="Name"><Input value={s.name} onChange={v => updateService(s.id, 'name', v)} /></Field>
+                    <Field label="Category">
+                      <select value={s.category} onChange={e => updateService(s.id, 'category', e.target.value)}
+                        className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm">
+                        {categories.map(c => (
+                          <option key={c.key} value={c.key}>{c.label}</option>
+                        ))}
+                      </select>
+                    </Field>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="Sub-group / Korean">
+                      <Input value={s.korean} onChange={v => updateService(s.id, 'korean', v)}
+                        placeholder="e.g. Facial Waxing (waxing only)" />
+                    </Field>
+                    <Field label="Duration"><Input value={s.duration} onChange={v => updateService(s.id, 'duration', v)} /></Field>
+                  </div>
+                  <Field label="Description"><Textarea value={s.description} onChange={v => updateService(s.id, 'description', v)} /></Field>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field label="Non-member Price"><Input value={s.price} onChange={v => updateService(s.id, 'price', v)} /></Field>
+                    <Field label="Member Price"><Input value={s.memberPrice} onChange={v => updateService(s.id, 'memberPrice', v)} /></Field>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <button onClick={addService}
+          className="mt-4 border border-gray-200 rounded-lg px-5 py-2 text-sm font-medium hover:bg-gray-50">
+          + Add Menu Item
+        </button>
+      </Card>
+    </>
   );
 }
 

@@ -1,16 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useSite } from '../context/SiteContext';
 import { BOOKING_URL, GIFT_CARD_URL } from '../constants/links';
-
-const NAV_LINKS = [
-  { href: '#about', label: 'About' },
-  { href: '#services', label: 'Services' },
-  { href: '#membership', label: 'Membership' },
-  { href: '#packages', label: 'Packages' },
-  { href: '#results', label: 'Results' },
-  { href: '#contact', label: 'Contact' },
-];
+import { getNavigation } from '../constants/siteDefaults';
 
 export default function Header() {
+  const { data } = useSite();
+  const navLinks = useMemo(() => getNavigation(data), [data]);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -26,6 +21,10 @@ export default function Header() {
 
   function scrollTo(href) {
     setMenuOpen(false);
+    if (!href.startsWith('#')) {
+      window.open(href, '_blank', 'noopener,noreferrer');
+      return;
+    }
     const el = document.querySelector(href);
     el?.scrollIntoView({ behavior: 'smooth' });
   }
@@ -43,9 +42,9 @@ export default function Header() {
             Forest Day Spa
           </a>
 
-          <nav className="hidden md:flex items-center gap-9">
-            {NAV_LINKS.map(l => (
-              <button key={l.href} onClick={() => scrollTo(l.href)}
+          <nav className="hidden lg:flex items-center gap-7 xl:gap-9">
+            {navLinks.map(l => (
+              <button key={`${l.href}-${l.label}`} onClick={() => scrollTo(l.href)}
                 className="text-white/70 hover:text-white text-sm font-display font-semibold uppercase tracking-[0.12em] transition-colors">
                 {l.label}
               </button>
@@ -63,7 +62,7 @@ export default function Header() {
             </a>
           </div>
 
-          <button onClick={() => setMenuOpen(true)} className="md:hidden flex flex-col gap-1.5 p-1"
+          <button onClick={() => setMenuOpen(true)} className="lg:hidden flex flex-col gap-1.5 p-1"
             aria-label="Open menu">
             <span className="w-6 h-[1.5px] bg-white" />
             <span className="w-6 h-[1.5px] bg-white" />
@@ -72,15 +71,14 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Mobile Nav */}
       <div className={`fixed inset-0 z-[200] bg-forest-700 flex flex-col items-center justify-center gap-6
         transition-opacity duration-400 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
         <button onClick={() => setMenuOpen(false)}
           className="absolute top-6 right-6 text-white text-3xl bg-transparent border-none cursor-pointer">
           &times;
         </button>
-        {NAV_LINKS.map(l => (
-          <button key={l.href} onClick={() => scrollTo(l.href)}
+        {navLinks.map(l => (
+          <button key={`${l.href}-${l.label}`} onClick={() => scrollTo(l.href)}
             className="font-serif text-3xl text-white hover:text-gold-400 transition-colors">
             {l.label}
           </button>

@@ -1,22 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSite } from '../context/SiteContext';
 import useReveal from '../hooks/useReveal';
-
-const TABS = [
-  { key: 'facial', label: 'Facial' },
-  { key: 'body', label: 'Body' },
-  { key: 'scalp', label: 'Head Spa' },
-  { key: 'waxing', label: 'Waxing' },
-  { key: 'combo', label: 'Combo' },
-];
+import { getServiceCategories, getServicesSection } from '../constants/siteDefaults';
 
 export default function Services() {
   const { data } = useSite();
-  const [active, setActive] = useState('facial');
+  const categories = useMemo(() => getServiceCategories(data), [data]);
+  const section = useMemo(() => getServicesSection(data), [data]);
+  const [active, setActive] = useState(categories[0]?.key || 'facial');
   const [ref, vis] = useReveal();
+
+  useEffect(() => {
+    if (!categories.some(c => c.key === active)) {
+      setActive(categories[0]?.key || 'facial');
+    }
+  }, [categories, active]);
 
   if (!data?.services) return null;
 
+  const activeCategory = categories.find(c => c.key === active);
   const filtered = data.services.filter(s => s.category === active);
 
   return (
@@ -24,19 +26,15 @@ export default function Services() {
       <div className="max-w-[1200px] mx-auto px-6">
         <div ref={ref}
           className={`text-center mb-12 transition-all duration-700 ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <span className="eyebrow">Our Services</span>
-          <h2 className="heading-lg mb-5">Treatments Tailored for You</h2>
-          <p className="desc-text mx-auto">
-            From K-beauty facials to tension-melting body work, restorative head spa, smooth waxing, and combo packages —
-            every treatment is a journey to renewal.
-          </p>
+          <span className="eyebrow">{section.label}</span>
+          <h2 className="heading-lg mb-5">{section.title}</h2>
+          <p className="desc-text mx-auto">{section.description}</p>
         </div>
 
-        {/* Tabs */}
         <div className="flex justify-center border-b border-gray-200 mb-14 flex-wrap">
-          {TABS.map(t => (
+          {categories.map(t => (
             <button key={t.key} onClick={() => setActive(t.key)}
-              className={`relative px-8 py-4 text-sm font-display font-bold uppercase tracking-wider
+              className={`relative px-6 md:px-8 py-4 text-sm font-display font-bold uppercase tracking-wider
                 transition-colors ${active === t.key ? 'text-forest-500' : 'text-gray-400 hover:text-gray-600'}`}>
               {t.label}
               <span className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gold-400
@@ -46,11 +44,10 @@ export default function Services() {
           ))}
         </div>
 
-        {/* Waxing — special price list layout */}
-        {active === 'waxing' ? (
+        {activeCategory?.layout === 'waxing' ? (
           <WaxingPanel services={filtered} />
         ) : filtered.length === 0 ? (
-          <EmptyPanel label={TABS.find(t => t.key === active)?.label || 'Services'} />
+          <EmptyPanel label={activeCategory?.label || 'Services'} />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-200">
             {filtered.map((s, i) => (
@@ -72,7 +69,7 @@ function EmptyPanel({ label }) {
         ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
       <p className="font-serif text-2xl text-forest-600 mb-3">{label}</p>
       <p className="desc-text mx-auto max-w-md">
-        Packages are being updated. Please check back soon or call us to book.
+        Menu items are being updated. Please call us to book.
       </p>
     </div>
   );
@@ -80,14 +77,13 @@ function EmptyPanel({ label }) {
 
 function WaxingPanel({ services }) {
   const facial = services.filter(s => s.korean === 'Facial Waxing');
-  const body   = services.filter(s => s.korean === 'Body Waxing');
+  const body = services.filter(s => s.korean === 'Body Waxing');
   const [ref, vis] = useReveal();
 
   return (
     <div ref={ref}
       className={`transition-all duration-700 ${vis ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Facial Waxing */}
         <div className="border border-gray-200 p-8">
           <h3 className="font-serif text-2xl mb-6 pb-4 border-b border-gray-100">Facial Waxing</h3>
           <ul className="space-y-0">
@@ -100,7 +96,6 @@ function WaxingPanel({ services }) {
             ))}
           </ul>
         </div>
-        {/* Body Waxing */}
         <div className="border border-gray-200 p-8">
           <h3 className="font-serif text-2xl mb-6 pb-4 border-b border-gray-100">Body Waxing</h3>
           <ul className="space-y-0">

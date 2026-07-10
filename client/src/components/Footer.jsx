@@ -1,15 +1,22 @@
+import { useMemo } from 'react';
 import { useSite } from '../context/SiteContext';
 import { GIFT_CARD_URL } from '../constants/links';
+import { getNavigation, getServiceCategories } from '../constants/siteDefaults';
 
 export default function Footer() {
   const { data } = useSite();
   const c = data?.contact;
+  const nav = useMemo(() => getNavigation(data), [data]);
+  const categories = useMemo(() => getServiceCategories(data), [data]);
+
+  const companyLinks = nav.filter(l =>
+    ['#about', '#results', '#contact', '#faq', '#membership', '#packages'].includes(l.href)
+  );
 
   return (
     <footer className="bg-forest-700 text-white/50 pt-20 pb-8">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr] gap-10 mb-16">
-          {/* Brand */}
           <div>
             <a href="#" className="font-serif text-3xl font-semibold text-white block mb-4">
               Forest Day Spa
@@ -18,7 +25,6 @@ export default function Footer() {
               Korean-inspired wellness spa dedicated to skin health, scalp restoration,
               and total relaxation in Carrollton, TX.
             </p>
-            {/* Newsletter */}
             <div className="mt-6">
               <p className="text-xs uppercase tracking-wider text-white/30 mb-3 font-semibold">Newsletter</p>
               <form onSubmit={e => e.preventDefault()} className="flex">
@@ -33,28 +39,28 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Services */}
           <div>
             <h4 className="text-xs font-display font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Services</h4>
-            <a href="#services" className="block text-sm py-1 hover:text-gold-400 transition-colors">Facial Care</a>
-            <a href="#services" className="block text-sm py-1 hover:text-gold-400 transition-colors">Body Care</a>
-            <a href="#services" className="block text-sm py-1 hover:text-gold-400 transition-colors">Scalp Care</a>
-            <a href="#membership" className="block text-sm py-1 hover:text-gold-400 transition-colors">Membership</a>
-            <a href="#packages" className="block text-sm py-1 hover:text-gold-400 transition-colors">Packages</a>
+            {categories.map(cat => (
+              <a key={cat.key} href="#services"
+                className="block text-sm py-1 hover:text-gold-400 transition-colors">
+                {cat.label}
+              </a>
+            ))}
             <a href={GIFT_CARD_URL} target="_blank" rel="noreferrer"
               className="block text-sm py-1 hover:text-gold-400 transition-colors">Gift Cards</a>
           </div>
 
-          {/* Company */}
           <div>
             <h4 className="text-xs font-display font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Company</h4>
-            <a href="#about" className="block text-sm py-1 hover:text-gold-400 transition-colors">About Us</a>
-            <a href="#results" className="block text-sm py-1 hover:text-gold-400 transition-colors">Results</a>
-            <a href="#contact" className="block text-sm py-1 hover:text-gold-400 transition-colors">Contact</a>
-            <a href="#faq" className="block text-sm py-1 hover:text-gold-400 transition-colors">FAQ</a>
+            {companyLinks.map(l => (
+              <a key={`${l.href}-${l.label}`} href={l.href}
+                className="block text-sm py-1 hover:text-gold-400 transition-colors">
+                {l.label}
+              </a>
+            ))}
           </div>
 
-          {/* Contact */}
           <div>
             <h4 className="text-xs font-display font-bold uppercase tracking-[0.15em] text-white/30 mb-5">Contact</h4>
             {c && (

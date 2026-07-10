@@ -1,11 +1,20 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useSite } from '../context/SiteContext';
 import useReveal from '../hooks/useReveal';
 import { BOOKING_URL, GIFT_CARD_URL } from '../constants/links';
+import {
+  getServiceCategories,
+  groupServicesByCategory,
+  serviceOptionLabel,
+} from '../constants/siteDefaults';
 
 export default function Contact() {
   const { data } = useSite();
   const c = data?.contact;
+  const serviceGroups = useMemo(
+    () => groupServicesByCategory(data?.services || [], getServiceCategories(data)),
+    [data],
+  );
   const [ref1, vis1] = useReveal();
   const [ref2, vis2] = useReveal();
   const [showBooking, setShowBooking] = useState(false);
@@ -37,6 +46,9 @@ export default function Contact() {
                 <a href={BOOKING_URL} target="_blank" rel="noreferrer" className="btn-gold">
                   Book an Appointment
                 </a>
+                <button type="button" onClick={() => setShowBooking(true)} className="btn-outline-forest">
+                  Request via Form
+                </button>
                 <a href={GIFT_CARD_URL} target="_blank" rel="noreferrer" className="btn-outline-forest">
                   Buy Gift Card
                 </a>
@@ -64,7 +76,13 @@ export default function Contact() {
       </section>
 
       {/* Booking Modal */}
-      {showBooking && <BookingModal onClose={() => setShowBooking(false)} contact={c} />}
+      {showBooking && (
+        <BookingModal
+          onClose={() => setShowBooking(false)}
+          contact={c}
+          serviceGroups={serviceGroups}
+        />
+      )}
     </>
   );
 }
@@ -83,7 +101,7 @@ function ContactItem({ icon, title, content }) {
   );
 }
 
-function BookingModal({ onClose, contact }) {
+function BookingModal({ onClose, contact, serviceGroups }) {
   const [submitted, setSubmitted] = useState(false);
 
   function handleSubmit(e) {
@@ -129,45 +147,15 @@ function BookingModal({ onClose, contact }) {
               <select required
                 className="border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-forest-500 w-full text-gray-500">
                 <option value="">Select Service</option>
-                <optgroup label="Facial">
-                  <option>Stay Beauty (60 min)</option>
-                  <option>Snow Beauty (80 min)</option>
-                  <option>Facial Contouring (90 min)</option>
-                  <option>Sono Beauty (70 min)</option>
-                  <option>Reset Beauty (80 min)</option>
-                </optgroup>
-                <optgroup label="Body">
-                  <option>Gyeongrak Full Body (55-85 min)</option>
-                  <option>Partial Contouring (50-65 min)</option>
-                  <option>Cellulite Reduction (55 min)</option>
-                  <option>Abdomen &amp; Sides (70 min)</option>
-                  <option>Dress Care Sculpting (70 min)</option>
-                </optgroup>
-                <optgroup label="Head Spa">
-                  <option>Morning Dew Ritual</option>
-                  <option>Deep Cedar Detox</option>
-                  <option>Willow Silk Therapy</option>
-                  <option>Root Renewal Therapy</option>
-                </optgroup>
-                <optgroup label="Facial Waxing">
-                  <option>Eye Brow ($25)</option>
-                  <option>Brow / Lip Combo ($40)</option>
-                  <option>Full Face ($65)</option>
-                  <option>Lip ($20)</option>
-                  <option>Chin ($20)</option>
-                  <option>Sideburns ($20)</option>
-                  <option>Cheeks ($20)</option>
-                </optgroup>
-                <optgroup label="Body Waxing">
-                  <option>Underarms ($40)</option>
-                  <option>Half Arms ($50)</option>
-                  <option>Full Arms ($50)</option>
-                  <option>Half Legs ($65)</option>
-                  <option>Full Legs ($95)</option>
-                  <option>Stomach ($30)</option>
-                  <option>Brazilian ($85)</option>
-                  <option>Bikini ($60)</option>
-                </optgroup>
+                {serviceGroups.map(({ category, items }) => (
+                  <optgroup key={category.key} label={category.label}>
+                    {items.map(s => (
+                      <option key={s.id} value={serviceOptionLabel(s)}>
+                        {serviceOptionLabel(s)}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
               </select>
               <input type="date" required
                 className="border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-forest-500 w-full text-gray-500" />
