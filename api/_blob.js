@@ -8,9 +8,5 @@ export function getBlobToken() {
 }
 
 export function isBlobConfigured() {
-  return !!(
-    getBlobToken() ||
-    process.env.BLOB_STORE_ID ||
-    process.env.VERCEL_OIDC_TOKEN
-  );
+  return !!getBlobToken();
 }

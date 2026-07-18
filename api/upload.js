@@ -1,23 +1,65 @@
-import Busboy from 'busboy';
-import { put } from '@vercel/blob';
-import { verifyAdminRequest } from './_auth.js';
+import { handleUpload } from '@vercel/blob/client';
+import { verifyAdminRequest, getAdminToken, isAdminConfigured } from './_auth.js';
 import { isBlobConfigured, getBlobToken } from './_blob.js';
 
-export const config = {
-  api: { bodyParser: false },
-};
+const ALLOWED_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif',
+  'video/mp4',
+  'video/quicktime',
+  'video/webm',
+];
 
-const IMAGE_LIMIT = 15 * 1024 * 1024;
-const VIDEO_LIMIT = 100 * 1024 * 1024;
+function isAuthorized(req, clientPayload) {
+  if (!isAdminConfigured()) return true;
+  if (verifyAdminRequest(req)) return true;
 
-function isVideo(mime = '') {
-  return mime.startsWith('video/');
+  try {
+    const payload = clientPayload ? JSON.parse(clientPayload) : {};
+    return payload.token === getAdminToken();
+  } catch {
+    return false;
+  }
+}
+
+async function readJsonBody(req) {
+  if (req.body && typeof req.body === 'object') return req.body;
+  if (typeof req.body === 'string') {
+    try {
+      return JSON.parse(req.body);
+    } catch {
+      return null;
+    }
+  }
+
+  const chunks = [];
+  for await (const chunk of req) {
+    chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk);
+  }
+  const raw = Buffer.concat(chunks).toString('utf8');
+  if (!raw) return null;
+
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function maxSizeForPath(pathname, multipart) {
+  const lower = (pathname || '').toLowerCase();
+  const isVideo = lower.endsWith('.mp4') || lower.endsWith('.mov') || lower.endsWith('.webm');
+  if (isVideo) return 100 * 1024 * 1024;
+  if (multipart) return 100 * 1024 * 1024;
+  return 15 * 1024 * 1024;
 }
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-vercel-signature');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   if (req.method !== 'POST') {
@@ -30,71 +72,40 @@ export default async function handler(req, res) {
     });
   }
 
-  if (!verifyAdminRequest(req)) {
-    return res.status(401).json({ error: 'Unauthorized. Sign in to admin first.' });
+  const blobToken = getBlobToken();
+  if (!blobToken) {
+    return res.status(503).json({
+      error: 'Blob token missing. Reconnect Vercel Blob storage to this project, then Redeploy.',
+    });
   }
 
-  return new Promise(resolve => {
-    const busboy = Busboy({
-      headers: req.headers,
-      limits: { fileSize: VIDEO_LIMIT },
+  try {
+    const body = await readJsonBody(req);
+    if (!body?.type) {
+      return res.status(400).json({ error: 'Invalid upload request.' });
+    }
+
+    const jsonResponse = await handleUpload({
+      body,
+      request: req,
+      token: blobToken,
+      onBeforeGenerateToken: async (pathname, clientPayload, multipart) => {
+        if (!isAuthorized(req, clientPayload)) {
+          throw new Error('Unauthorized. Sign in to admin first.');
+        }
+
+        return {
+          allowedContentTypes: ALLOWED_TYPES,
+          maximumSizeInBytes: maxSizeForPath(pathname, multipart),
+          addRandomSuffix: false,
+        };
+      },
+      onUploadCompleted: async () => {},
     });
 
-    let fileBuffer = null;
-    let filename = 'upload.bin';
-    let mimeType = 'application/octet-stream';
-    let limitHit = false;
-
-    busboy.on('file', (_field, file, info) => {
-      filename = info.filename || filename;
-      mimeType = info.mimeType || mimeType;
-      const chunks = [];
-
-      file.on('data', chunk => chunks.push(chunk));
-      file.on('limit', () => { limitHit = true; });
-      file.on('end', () => {
-        if (!limitHit) fileBuffer = Buffer.concat(chunks);
-      });
-    });
-
-    busboy.on('error', error => {
-      resolve(res.status(400).json({ error: error.message || 'Upload failed' }));
-    });
-
-    busboy.on('finish', async () => {
-      if (limitHit) {
-        return resolve(res.status(413).json({
-          error: 'File is too large. Images up to 15MB, videos up to 100MB.',
-        }));
-      }
-
-      if (!fileBuffer?.length) {
-        return resolve(res.status(400).json({ error: 'No file uploaded.' }));
-      }
-
-      const maxSize = isVideo(mimeType) ? VIDEO_LIMIT : IMAGE_LIMIT;
-      if (fileBuffer.length > maxSize) {
-        return resolve(res.status(413).json({
-          error: isVideo(mimeType)
-            ? 'Video is too large (max 100MB).'
-            : 'Image is too large (max 15MB).',
-        }));
-      }
-
-      try {
-        const safeName = `fds-${Date.now()}-${filename.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-        const blob = await put(safeName, fileBuffer, {
-          access: 'public',
-          contentType: mimeType,
-          token: getBlobToken() || undefined,
-        });
-        resolve(res.status(200).json({ url: blob.url }));
-      } catch (error) {
-        console.error('Blob upload failed:', error);
-        resolve(res.status(500).json({ error: error.message || 'Upload failed' }));
-      }
-    });
-
-    req.pipe(busboy);
-  });
+    return res.status(200).json(jsonResponse);
+  } catch (error) {
+    console.error('Upload failed:', error);
+    return res.status(400).json({ error: error.message || 'Upload failed' });
+  }
 }

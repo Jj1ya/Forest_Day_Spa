@@ -5,6 +5,9 @@
   "functions": {
     "api/site.js": {
       "includeFiles": "server/data/site.json"
+    },
+    "api/upload.js": {
+      "maxDuration": 60
     }
   },
   "rewrites": [
