@@ -30,6 +30,6 @@ export function isBlobConfigured() {
 }
 
 export function getBlobAccess() {
-  const value = (process.env.BLOB_DEFAULT_ACCESS || 'private').toLowerCase();
-  return value === 'public' ? 'public' : 'private';
+  const value = (process.env.BLOB_DEFAULT_ACCESS || 'public').toLowerCase();
+  return value === 'private' ? 'private' : 'public';
 }
