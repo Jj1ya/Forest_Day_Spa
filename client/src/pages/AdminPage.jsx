@@ -978,7 +978,8 @@ function ContactPanel({ data, updateField }) {
         <Field label="Email"><Input value={c.email} onChange={v => updateField('contact', 'email', v)} /></Field>
       </div>
       <Field label="Hours"><Input value={c.hours} onChange={v => updateField('contact', 'hours', v)} /></Field>
-      <Field label="Google Maps Embed URL" hint="Go to Google Maps → Share → Embed → Copy the src URL">
+      <Field label="Google Maps Embed URL (optional)"
+        hint="Leave blank to auto-show map from your address. Only paste a URL from Google Maps → Share → Embed a map → copy src.">
         <Input value={c.mapUrl} onChange={v => updateField('contact', 'mapUrl', v)} />
       </Field>
       <div className="grid grid-cols-2 gap-4">

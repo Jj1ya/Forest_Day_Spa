@@ -7,6 +7,7 @@ import {
   groupServicesByCategory,
   serviceOptionLabel,
 } from '../constants/siteDefaults';
+import { getMapDirectionsUrl, getMapEmbedUrl } from '../lib/maps';
 
 export default function Contact() {
   const { data } = useSite();
@@ -18,6 +19,8 @@ export default function Contact() {
   const [ref1, vis1] = useReveal();
   const [ref2, vis2] = useReveal();
   const [showBooking, setShowBooking] = useState(false);
+  const mapEmbedUrl = useMemo(() => getMapEmbedUrl(c), [c]);
+  const mapDirectionsUrl = useMemo(() => getMapDirectionsUrl(c), [c]);
   if (!c) return null;
 
   return (
@@ -56,11 +59,20 @@ export default function Contact() {
             </div>
 
             <div ref={ref2}
-              className={`bg-warm overflow-hidden min-h-[400px] md:min-h-[480px]
+              className={`bg-warm overflow-hidden min-h-[400px] md:min-h-[480px] relative
                 transition-all duration-700 delay-100 ${vis2 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              {c.mapUrl ? (
-                <iframe src={c.mapUrl} className="w-full h-full border-none" allowFullScreen loading="lazy"
-                  title="Forest Day Spa Location" />
+              {mapEmbedUrl ? (
+                <>
+                  <iframe src={mapEmbedUrl} className="w-full h-full min-h-[400px] md:min-h-[480px] border-none"
+                    allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"
+                    title="Forest Day Spa Location" />
+                  {mapDirectionsUrl && (
+                    <a href={mapDirectionsUrl} target="_blank" rel="noreferrer"
+                      className="absolute bottom-4 right-4 bg-white/95 text-forest-700 text-xs font-semibold uppercase tracking-wider px-4 py-2 shadow-md hover:bg-white">
+                      Open in Google Maps
+                    </a>
+                  )}
+                </>
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
                   <div className="text-center">
