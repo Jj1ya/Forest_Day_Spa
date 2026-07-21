@@ -66,4 +66,23 @@
 
   .hide-scrollbar::-webkit-scrollbar { display: none; }
   .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .gallery-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #C9A96E #E8E4DC;
+  }
+  .gallery-scroll::-webkit-scrollbar {
+    height: 8px;
+  }
+  .gallery-scroll::-webkit-scrollbar-track {
+    background: #E8E4DC;
+    border-radius: 999px;
+  }
+  .gallery-scroll::-webkit-scrollbar-thumb {
+    background: #C9A96E;
+    border-radius: 999px;
+  }
+  .gallery-scroll::-webkit-scrollbar-thumb:hover {
+    background: #1A3A28;
+  }
 }
