@@ -82,7 +82,7 @@ export default function AdminPage() {
       )}
       {!canUpload && (
         <div className={`fixed left-0 right-0 z-[69] bg-amber-600 text-white text-sm px-4 py-3 text-center ${!canSave ? 'top-12' : 'top-0'}`}>
-          파일 업로드가 안 됩니다 — Vercel → Storage → <strong>Blob</strong> 연결 후 Redeploy 해주세요. (URL 직접 입력은 가능)
+          파일 업로드가 안 됩니다 — Vercel → Storage → <strong>Blob</strong>을 이 프로젝트(Production)에 연결한 뒤 <strong>Redeploy</strong> 해주세요.
         </div>
       )}
       {/* Mobile toggle */}

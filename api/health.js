@@ -1,4 +1,4 @@
-import { isBlobConfigured } from './_blob.js';
+import { isBlobConfigured, canGenerateClientToken } from './_blob.js';
 
 export default async function handler(_req, res) {
   const url =
@@ -14,5 +14,6 @@ export default async function handler(_req, res) {
     redisConfigured: !!(url && token),
     canSave: !!(url && token),
     uploadConfigured: isBlobConfigured(),
+    clientUploadAvailable: canGenerateClientToken(),
   });
 }
