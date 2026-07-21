@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSite } from '../context/SiteContext';
 import { uploadMedia } from '../lib/upload';
 
 export default function MediaUploadField({
@@ -6,11 +7,14 @@ export default function MediaUploadField({
   hint,
   value,
   onChange,
+  getNextData,
   accept = 'image/*',
   kind = 'image',
 }) {
+  const { save } = useSite();
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [savedNote, setSavedNote] = useState('');
 
   async function handleFile(e) {
     const file = e.target.files?.[0];
@@ -18,9 +22,15 @@ export default function MediaUploadField({
 
     setUploading(true);
     setError('');
+    setSavedNote('');
     try {
       const url = await uploadMedia(file);
       onChange(url);
+
+      if (getNextData) {
+        await save(getNextData(url));
+        setSavedNote('Saved to homepage.');
+      }
     } catch (err) {
       setError(err?.message || 'Upload failed');
     } finally {
@@ -82,6 +92,7 @@ export default function MediaUploadField({
       </div>
 
       {hint && <p className="text-xs text-gray-400 mt-1">{hint}</p>}
+      {savedNote && <p className="text-xs text-[#1A3A28] mt-1">{savedNote}</p>}
       {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   );

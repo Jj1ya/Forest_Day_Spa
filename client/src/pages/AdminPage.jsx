@@ -252,6 +252,7 @@ function HeroPanel({ data, updateField }) {
           hint="Upload a short MP4, or leave empty to use the poster image only."
           value={h.videoUrl}
           onChange={v => updateField('hero', 'videoUrl', v)}
+          getNextData={url => ({ ...data, hero: { ...h, videoUrl: url } })}
           accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm"
           kind="video"
         />
@@ -260,6 +261,7 @@ function HeroPanel({ data, updateField }) {
           hint="Shown when no video is set, or while the video loads."
           value={h.posterUrl}
           onChange={v => updateField('hero', 'posterUrl', v)}
+          getNextData={url => ({ ...data, hero: { ...h, posterUrl: url } })}
           accept="image/*"
           kind="image"
         />
@@ -313,6 +315,7 @@ function AboutPanel({ data, updateField }) {
         label="Image"
         value={a.imageUrl}
         onChange={v => updateField('about', 'imageUrl', v)}
+        getNextData={url => ({ ...data, about: { ...a, imageUrl: url } })}
         accept="image/*"
         kind="image"
       />
@@ -812,6 +815,12 @@ function BAPanel({ data, setData }) {
                 label="Before Image"
                 value={b.beforeImg}
                 onChange={v => updateBA(b.id, 'beforeImg', v)}
+                getNextData={url => ({
+                  ...data,
+                  beforeAfter: data.beforeAfter.map(item =>
+                    item.id === b.id ? { ...item, beforeImg: url } : item
+                  ),
+                })}
                 accept="image/*"
                 kind="image"
               />
@@ -819,6 +828,12 @@ function BAPanel({ data, setData }) {
                 label="After Image"
                 value={b.afterImg}
                 onChange={v => updateBA(b.id, 'afterImg', v)}
+                getNextData={url => ({
+                  ...data,
+                  beforeAfter: data.beforeAfter.map(item =>
+                    item.id === b.id ? { ...item, afterImg: url } : item
+                  ),
+                })}
                 accept="image/*"
                 kind="image"
               />
@@ -894,7 +909,9 @@ function GalleryPanel({ data, setData }) {
 
   return (
     <Card title="Gallery Images">
-      <p className="text-xs text-gray-400 mb-4">Upload photos from your phone or computer — no URL needed.</p>
+      <p className="text-xs text-gray-400 mb-4">
+        Upload photos from your phone or computer — files save to the homepage automatically after upload.
+      </p>
       <div className="space-y-6">
         {data.gallery.map((url, i) => (
           <div key={i} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
@@ -902,6 +919,11 @@ function GalleryPanel({ data, setData }) {
               label={`Image ${i + 1}`}
               value={url}
               onChange={v => updateImg(i, v)}
+              getNextData={uploadedUrl => {
+                const g = [...data.gallery];
+                g[i] = uploadedUrl;
+                return { ...data, gallery: g };
+              }}
               accept="image/*"
               kind="image"
             />
