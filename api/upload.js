@@ -1,11 +1,13 @@
 import Busboy from 'busboy';
 import { put } from '@vercel/blob';
+import { getVercelOidcToken } from '@vercel/oidc';
 import { handleUpload } from '@vercel/blob/client';
 import { verifyAdminRequest, getAdminToken, isAdminConfigured } from './_auth.js';
 import {
   canGenerateClientToken,
   canServerUpload,
   getBlobAccess,
+  getBlobStoreId,
   getBlobToken,
   isBlobConfigured,
 } from './_blob.js';
@@ -30,6 +32,15 @@ function isVideo(mime = '') {
 
 function isMultipart(req) {
   return (req.headers['content-type'] || '').includes('multipart/form-data');
+}
+
+function isAllowedType(mime = '') {
+  return ALLOWED_TYPES.includes(mime) || mime.startsWith('image/') || mime.startsWith('video/');
+}
+
+function formatError(error) {
+  const message = error?.message || String(error || 'Upload failed');
+  return message.replace(/^Vercel Blob:\s*/i, '').replace(/^Error:\s*/i, '');
 }
 
 function isAuthorized(req, clientPayload) {
@@ -74,6 +85,9 @@ async function readJsonBody(req) {
 
 async function parseMultipart(req) {
   const rawBody = await readRawBody(req);
+  if (!rawBody.length) {
+    throw new Error('No file uploaded. Please choose a file and try again.');
+  }
 
   return new Promise((resolve, reject) => {
     const busboy = Busboy({
@@ -105,7 +119,7 @@ async function parseMultipart(req) {
         return;
       }
       if (!fileBuffer?.length) {
-        reject(new Error('No file uploaded.'));
+        reject(new Error('No file uploaded. Please choose a file and try again.'));
         return;
       }
       resolve({ fileBuffer, filename, mimeType });
@@ -123,7 +137,34 @@ function maxSizeForPath(pathname, multipart) {
   return IMAGE_LIMIT;
 }
 
+async function buildPutOptions(mimeType) {
+  const putOptions = {
+    access: getBlobAccess(),
+    contentType: mimeType,
+    addRandomSuffix: false,
+  };
+
+  const blobToken = getBlobToken();
+  if (blobToken) {
+    putOptions.token = blobToken;
+    return putOptions;
+  }
+
+  const storeId = getBlobStoreId();
+  if (!storeId) {
+    throw new Error('Blob store is not connected. Reconnect Blob in Vercel, then Redeploy.');
+  }
+
+  putOptions.storeId = storeId;
+  putOptions.oidcToken = await getVercelOidcToken();
+  return putOptions;
+}
+
 async function uploadBufferToBlob(fileBuffer, filename, mimeType) {
+  if (!isAllowedType(mimeType)) {
+    throw new Error('Unsupported file type. Use JPG, PNG, WebP, GIF, MP4, MOV, or WebM.');
+  }
+
   const maxSize = isVideo(mimeType) ? VIDEO_LIMIT : IMAGE_LIMIT;
   if (fileBuffer.length > maxSize) {
     throw new Error(
@@ -135,19 +176,12 @@ async function uploadBufferToBlob(fileBuffer, filename, mimeType) {
 
   if (fileBuffer.length > VERCEL_BODY_LIMIT && !canGenerateClientToken()) {
     throw new Error(
-      'This file is too large for server upload. In Vercel, enable BLOB_READ_WRITE_TOKEN for large uploads, or use a file under 4.5MB.',
+      'This file is too large for server upload (max 4.5MB). Compress the image or reconnect Blob with a read-write token.',
     );
   }
 
   const safeName = `fds-${Date.now()}-${filename.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-  const putOptions = {
-    access: getBlobAccess(),
-    contentType: mimeType,
-  };
-
-  const blobToken = getBlobToken();
-  if (blobToken) putOptions.token = blobToken;
-
+  const putOptions = await buildPutOptions(mimeType);
   return put(safeName, fileBuffer, putOptions);
 }
 
@@ -224,6 +258,6 @@ export default async function handler(req, res) {
     return await handleClientTokenRequest(req, res, body);
   } catch (error) {
     console.error('Upload failed:', error);
-    return res.status(400).json({ error: error.message || 'Upload failed' });
+    return res.status(400).json({ error: formatError(error) });
   }
 }
