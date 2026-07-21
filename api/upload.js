@@ -5,6 +5,7 @@ import { verifyAdminRequest, getAdminToken, isAdminConfigured } from './_auth.js
 import {
   canGenerateClientToken,
   canServerUpload,
+  getBlobAccess,
   getBlobToken,
   isBlobConfigured,
 } from './_blob.js';
@@ -140,7 +141,7 @@ async function uploadBufferToBlob(fileBuffer, filename, mimeType) {
 
   const safeName = `fds-${Date.now()}-${filename.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
   const putOptions = {
-    access: 'public',
+    access: getBlobAccess(),
     contentType: mimeType,
   };
 

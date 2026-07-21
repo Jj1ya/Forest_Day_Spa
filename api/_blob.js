@@ -21,12 +21,15 @@ export function canGenerateClientToken() {
 }
 
 export function canServerUpload() {
-  return !!(
-    getBlobToken() ||
-    (getBlobStoreId() && process.env.VERCEL_OIDC_TOKEN)
-  );
+  // OIDC auth resolves at runtime via @vercel/oidc when BLOB_STORE_ID is set.
+  return !!(getBlobToken() || getBlobStoreId());
 }
 
 export function isBlobConfigured() {
   return canServerUpload();
+}
+
+export function getBlobAccess() {
+  const value = (process.env.BLOB_DEFAULT_ACCESS || 'private').toLowerCase();
+  return value === 'public' ? 'public' : 'private';
 }
