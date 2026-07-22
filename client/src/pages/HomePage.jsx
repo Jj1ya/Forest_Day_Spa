@@ -12,6 +12,7 @@ import FAQ from '../components/FAQ';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import FloatingCTA from '../components/FloatingCTA';
+import CookieConsent from '../components/CookieConsent';
 
 export default function HomePage() {
   const { loading } = useSite();
@@ -42,6 +43,7 @@ export default function HomePage() {
       <Contact />
       <Footer />
       <FloatingCTA />
+      <CookieConsent />
     </>
   );
 }

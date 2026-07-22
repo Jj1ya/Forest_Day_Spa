@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useSite } from '../context/SiteContext';
 import { GIFT_CARD_URL } from '../constants/links';
 import { getNavigation, getServiceCategories } from '../constants/siteDefaults';
+import { openCookiePreferences } from './CookieConsent';
 
 export default function Footer() {
   const { data } = useSite();
@@ -82,6 +83,8 @@ export default function Footer() {
               className="hover:text-gold-400 transition-colors">Instagram</a>}
             {c?.facebook && <a href={c.facebook} target="_blank" rel="noreferrer"
               className="hover:text-gold-400 transition-colors">Facebook</a>}
+            <button type="button" onClick={openCookiePreferences}
+              className="hover:text-gold-400 transition-colors">Cookie Settings</button>
             <a href="#" className="hover:text-gold-400 transition-colors">Privacy</a>
             <a href="#" className="hover:text-gold-400 transition-colors">Terms</a>
           </div>
